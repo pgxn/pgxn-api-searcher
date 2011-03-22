@@ -14,6 +14,8 @@ Module::Build->new(
         'Test::More'            => '0.96',
     },
     requires => {
+        'Carp'       => 0,
+        'File::Spec' => 0,
         'KinoSearch' => '0.311',
         'perl'       => 5.012,
     },
