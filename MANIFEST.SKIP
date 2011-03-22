@@ -26,7 +26,7 @@
 \b\.#
 
 # Avoid build files.
-^PGXN-API-Search
+^PGXN-API-Searcher
 
 # Avoid spelling test.
 pod-spelling.t$

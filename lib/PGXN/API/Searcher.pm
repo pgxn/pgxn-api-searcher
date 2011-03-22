@@ -1,4 +1,4 @@
-package PGXN::API::Search v0.5.6;
+package PGXN::API::Searcher v0.5.6;
 
 use 5.12.0;
 use utf8;
@@ -94,13 +94,13 @@ __END__
 
 =head1 Name
 
-PGXN::API::Search - PGXN API full text search interface
+PGXN::API::Searcher - PGXN API full text search interface
 
 =head1 Synopsis
 
-  use PGXN::API::Search;
+  use PGXN::API::Searcher;
   use JSON;
-  my $search PGXN::API::Search->new('/path/to/index');
+  my $search = PGXN::API::Searcher->new('/path/to/index');
   encode_json $search->search(doc => { query => $query });
 
 =head1 Description
@@ -127,9 +127,9 @@ But in case you I<do> want to use this module, here are the gory details.
 
 =head3 C<new>
 
-  my $search = PGXN::API::Search->new('/path/to/pgxn/index');
+  my $search = PGXN::API::Searcher->new('/path/to/pgxn/index');
 
-Constructs a PGXN::API::Search object, pointing it to a valid PGXN::API full
+Constructs a PGXN::API::Searcher object, pointing it to a valid PGXN::API full
 text search index path.
 
 =head2 Accessors

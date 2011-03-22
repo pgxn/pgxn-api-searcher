@@ -1,6 +1,6 @@
 _build
 blib
-PGXN-API-Search-*
+PGXN-API-Searcher-*
 MANIFEST
 MANIFEST.bak
 META.*

@@ -15,7 +15,7 @@ use File::Path 'remove_tree';
 
 my $CLASS;
 BEGIN {
-    $CLASS = 'PGXN::API::Search';
+    $CLASS = 'PGXN::API::Searcher';
     use_ok $CLASS or die;
 }
 

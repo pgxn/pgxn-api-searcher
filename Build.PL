@@ -3,7 +3,7 @@ use warnings;
 use Module::Build;
 
 Module::Build->new(
-    module_name        => 'PGXN::API::Search',
+    module_name        => 'PGXN::API::Searcher',
     license            => 'perl',
     create_makefile_pl => 'traditional',
     configure_requires => { 'Module::Build' => '0.30' },
@@ -25,9 +25,9 @@ Module::Build->new(
     },
     meta_merge => {
         resources => {
-            homepage   => 'http://search.cpan.org/dist/PGXN-API-Search/',
-            bugtracker => 'http://github.com/theory/pgxn-api-search/issues/',
-            repository => 'http://github.com/theory/pgxn-api-search/tree/',
+            homepage   => 'http://search.cpan.org/dist/PGXN-API-Searcher/',
+            bugtracker => 'http://github.com/theory/pgxn-api-searcher/issues/',
+            repository => 'http://github.com/theory/pgxn-api-searcher/tree/',
         }
     },
 )->create_build_script;
