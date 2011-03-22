@@ -4,25 +4,19 @@ use 5.12.0;
 use utf8;
 use Moose;
 
-has path => (is => 'rw', isa => 'Str', required => 1);
-has searcher => (
-    is      => 'ro',
-    isa     => 'KinoSearch::Search::IndexSearcher',
-    lazy    => 1,
-    default => sub {
-        KinoSearch::Search::IndexSearcher->new(index => shift->path);
-    },
-);
-has parser => (
-    is      => 'ro',
-    isa     => 'KinoSearch::Search::QueryParser',
-    lazy    => 1,
-    default => sub {
-        KinoSearch::Search::QueryParser->new(
-            schema => shift->searcher->get_schema
-        );
-    },
-);
+sub new {
+    my ($class, $path) = @_;
+    my $searcher = KinoSearch::Search::IndexSearcher->new(index => $path);
+    bless {
+        searcher => $searcher,
+        parser   => KinoSearch::Search::QueryParser->new(
+            schema => $searcher->get_schema
+        ),
+    } => $class;
+}
+
+sub searcher { shift->{searcher} }
+sub parser { shift->{parser} }
 
 my %fields = (
     dist      => [qw(title version abstract date nickname username)],
