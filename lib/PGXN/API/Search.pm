@@ -2,60 +2,76 @@ package PGXN::API::Search v0.5.6;
 
 use 5.12.0;
 use utf8;
-use Moose;
+use File::Spec;
+use Carp;
 
 sub new {
     my ($class, $path) = @_;
-    my $searcher = KinoSearch::Search::IndexSearcher->new(index => $path);
+    my (%searchers, %parsers);
+    for my $iname (qw(doc dist extension user tag)) {
+        $searchers{$iname} = KinoSearch::Search::IndexSearcher->new(
+            index => File::Spec->catdir($path, $iname)
+        );
+        $parsers{$iname} = KinoSearch::Search::QueryParser->new(
+            schema => $searchers{$iname}->get_schema
+        )
+    }
     bless {
-        searcher => $searcher,
-        parser   => KinoSearch::Search::QueryParser->new(
-            schema => $searcher->get_schema
-        ),
+        searchers => \%searchers,
+        parsers   => \%parsers,
     } => $class;
 }
 
-sub searcher { shift->{searcher} }
-sub parser { shift->{parser} }
+sub searchers { shift->{searchers} }
+sub parsers { shift->{parsers} }
+
+my %highlightable = (
+    doc       => 'body',
+    dist      => 'readme',
+    extension => 'abstract',
+    user      => 'details',
+    tag       => undef,
+);
 
 my %fields = (
-    dist      => [qw(title version abstract date nickname username)],
-    extension => [qw(title version abstract date nickname username dist distversion)],
-    tag       => [qw(title)],
-    user      => [qw(nickname username)],
+    doc       => [qw(title abstract dist version date nickname username)],
+    dist      => [qw(name version abstract date nickname username)],
+    extension => [qw(name abstract dist version date nickname username)],
+    user      => [qw(nickname name uri)],
+    tag       => [qw(name)],
 );
 
 sub search {
-    my ($self, $params) = @_;
-    my $query = $self->parser->parse($params->{query});
-    if (my $type = $params->{type}) {
-        my $type_query = KinoSearch::Search::TermQuery->new(
-            field => 'type',
-            term  => $type,
-        );
-        $query = KinoSearch::Search::ANDQuery->new(
-            children => [ $query, $type_query ]
-        );
-    }
+    my ($self, $iname, $params) = @_;
+    my $searcher = $self->{searchers}{$iname} or croak "No $iname index";
+    my $query    = $self->{parsers}{$iname}->parse($params->{query});
+    my $limit    = ($params->{limit} ||= 50) < 1000 ? $params->{limit} : 50;
 
-    my $hits = $self->searcher->hits(
+    my $hits = $searcher->hits(
         query      => $query,
         offset     => $params->{offset},
-        num_wanted => $params->{limit},
+        num_wanted => $limit,
     );
 
     # Arrange for highlighted excerpts to be created.
-    my $highlighter = KinoSearch::Highlight::Highlighter->new(
-        searcher => $self->searcher,
-        query    => $params->{query},
-        field    => 'body'
-    );
+    my $highlighter;
+    if (my $field = $highlightable{$iname}) {
+        my $h = KinoSearch::Highlight::Highlighter->new(
+            searcher => $searcher,
+            query    => $params->{query},
+            field    => $field,
+        );
+        $highlighter = sub {
+            return (excerpt => $h->create_excerpt(shift));
+        };
+    } else {
+        $highlighter = sub { };
+    }
 
     my %ret = (
-        type   => $params->{type},
         query  => $params->{query},
         offset => $params->{offset} || 0,
-        limit  => $params->{limit},
+        limit  => $limit,
         count  => $hits->total_hits,
         hits   => my $res = [],
     );
@@ -64,9 +80,8 @@ sub search {
     while ( my $hit = $hits->next ) {
         push @{ $res } => {
             score    => sprintf( "%0.3f", $hit->get_score ),
-            type     => $hit->{type},
-            excerpt  => $highlighter->create_excerpt($hit),
-            map { $_ => $hit->{$_} } @{ $fields{ $hit->{type} } }
+            $highlighter->($hit),
+            map { $_ => $hit->{$_} } @{ $fields{$iname} }
         };
     }
 
