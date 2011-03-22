@@ -62,7 +62,7 @@ sub search {
             field    => $field,
         );
         $highlighter = sub {
-            return (excerpt => $h->create_excerpt(shift));
+            return excerpt => $h->create_excerpt(shift);
         };
     } else {
         $highlighter = sub { };
