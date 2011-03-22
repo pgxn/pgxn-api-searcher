@@ -45,7 +45,7 @@ sub search {
     my ($self, $iname, $params) = @_;
     my $searcher = $self->{searchers}{$iname} or croak "No $iname index";
     my $query    = $self->{parsers}{$iname}->parse($params->{query});
-    my $limit    = ($params->{limit} ||= 50) < 1000 ? $params->{limit} : 50;
+    my $limit    = ($params->{limit} ||= 50) < 1024 ? $params->{limit} : 50;
 
     my $hits = $searcher->hits(
         query      => $query,
@@ -100,17 +100,106 @@ PGXN::API::Search - PGXN API full text search interface
 
   use PGXN::API::Search;
   use JSON;
-  my $search PGXN::API::Search->new({
-      path => '/path/to/index',
-  });
-
-  encode_json $search->search( query => $query );
+  my $search PGXN::API::Search->new('/path/to/index');
+  encode_json $search->search(doc => { query => $query });
 
 =head1 Description
 
-More to come.
+This module encapsulates the PGXN API search functionality. The indexes are
+created by L<PGXN::API::Indexer>; this module parses search queries, executes
+them against the appropriate index, and returns the results as a hash suitable
+for serializing to L<JSON|http://json.org> for a response to a request.
+
+To use this module, one must have a path to the search indexes created by
+PGXN::API. That is, with access to the same file system. It is therefore use
+by PGXN::API itself to process search requests. It can also be used by
+WWW::PGXN if its mirror URI is specified as a C<file:> URI.
+
+Unless you're creating a PGXN API of your own, or accessing one via the local
+file system (as L<PGXN::Site> does via L<WWW::PGXN>), you probably don't need
+this module. Best to just use L<WWW::PGXN>.
+
+But in case you I<do> want to use this module, here are the gory details.
+
+=head1 Interface
+
+=head2 Constructor
+
+=head3 C<new>
+
+  my $search = PGXN::API::Search->new('/path/to/pgxn/index');
+
+Constructs a PGXN::API::Search object, pointing it to a valid PGXN::API full
+text search index path.
+
+=head2 Accessors
+
+=head3 C<searchers>
+
+  my $doc_searcher = $search->searchers->{doc};
+
+Returns a hash reference of index search objects. The keys are the names of
+the indexes, and the values are L<KinoSearch::Search::IndexSearcher> objects.
+
+=head3 C<parsers>
+
+  my $doc_parser = $search->parsers->{doc};
+
+Returns a hash reference of search query parsers. The keys are the names of
+the indexes, and the values are L<KinoSearch::Search::QueryParser> objects.
+
+=head2 Instance Method
 
 =head3 C<search>
+
+  my $results = $search->search( doc => { query => $q });
+
+Queries the search index and returns a hash reference with the results. The
+first argument must be the name of the index. The possible values are:
+
+=over
+
+=item doc
+
+Full text indexing of PGXN documentation.
+
+=item dist
+
+Full text search of PGXN distributions.
+
+=item extension
+
+Full text search of PGXN extensions.
+
+=item user
+
+Full text search of PGXN users.
+
+=item tag
+
+Full text search of PGXN tags.
+
+=back
+
+The parameters supported in the hash reference second argument are:
+
+=over
+
+=item query
+
+The search query. See L<KinoSearch::Search::QueryParser> for the supported
+syntax of the query. Required.
+
+=item offset
+
+How many hits to skip before showing results. Defaults to 0.
+
+=item limit
+
+Maximum number of hits to return. Defaults to 50 and may not be greater than
+1024.
+
+=back
 
 =head1 Author
 

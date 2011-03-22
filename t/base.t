@@ -309,7 +309,7 @@ is $res->{hits}[0]{name}, 'pair', 'It should be the first record';
 # Exceed the limit.
 ok $res = $search->search(dist => {
     query => 'ordered pair',
-    limit => 1024,
+    limit => 2048,
 }), 'Search with excessive limit';
 is $res->{limit}, 50, 'Excessive limit should be ignored';
 
