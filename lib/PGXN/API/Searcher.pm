@@ -155,33 +155,8 @@ the indexes, and the values are L<KinoSearch::Search::QueryParser> objects.
   my $results = $search->search( doc => { query => $q });
 
 Queries the search index and returns a hash reference with the results. The
-first argument must be the name of the index. The possible values are:
-
-=over
-
-=item doc
-
-Full text indexing of PGXN documentation.
-
-=item dist
-
-Full text search of PGXN distributions.
-
-=item extension
-
-Full text search of PGXN extensions.
-
-=item user
-
-Full text search of PGXN users.
-
-=item tag
-
-Full text search of PGXN tags.
-
-=back
-
-The parameters supported in the hash reference second argument are:
+first argument specifies the index to query. The posible values are covered
+below. The parameters supported in the hash reference second argument are:
 
 =over
 
@@ -198,6 +173,207 @@ How many hits to skip before showing results. Defaults to 0.
 
 Maximum number of hits to return. Defaults to 50 and may not be greater than
 1024.
+
+=back
+
+The results will be returned as a hash with the following keys:
+
+=over
+
+=item query
+
+The query string. Same value as the C<query> parameter.
+
+=item limit
+
+Maximum number of records returned. Same as the C<limit> parameter unless it
+exceeds 1024, in which case it will be the default value, 50.
+
+=item offset
+
+The number of hits skipped.
+
+=item count
+
+The total count of hits, without regard to C<limit> or C<offset>. Usefor for
+laying out pagination links.
+
+=item hits
+
+An array of hash references. These constitute the search results. The keys in
+the hashes depend on which index was searched. See below for that information.
+
+=back
+
+The first argument must be the name of the index. The possible values are:
+
+=over
+
+=item doc
+
+Full text indexing of PGXN documentation. The C<hits> hashes will hae the
+following keys:
+
+=over
+
+=item title
+
+The document title.
+
+=item abstract
+
+The document abstract.
+
+=item excerpt
+
+An excerpt from the document with the search keywords highlighted in C<
+<<strong>> > tags.
+
+=item dist
+
+The name of the distribution in which the document is found.
+
+=item version
+
+The version of the distribution in which the document is found.
+
+=item path
+
+The path to the document within the distribution.
+
+=item date
+
+The distribution date.
+
+=item nickname
+
+The nickname of the user who created the distribution.
+
+=item username
+
+The full name of the user who created the distribution.
+
+=back
+
+=item dist
+
+Full text search of PGXN distributions. The C<hits> hashes will hae the
+following keys:
+
+=over
+
+=item name
+
+The name of the distribution.
+
+=item version
+
+The distribution version.
+
+=item excerpt
+
+An excerpt from the distribution with the search keywords highlighted in C<
+<<strong>> > tags.
+
+=item abstract
+
+The distribution abstract.
+
+=item date
+
+The distribution date.
+
+=item nickname
+
+The nickname of the user who created the distribution.
+
+=item username
+
+The full name of the user who created the distribution.
+
+=back
+
+=back
+
+=item extension
+
+Full text search of PGXN extensions. The C<hits> hashes will hae the following
+keys:
+
+=over
+
+=item name
+
+The name of the extension.
+
+=item excerpt
+
+An excerpt from the extension with the search keywords highlighted in C<
+<<strong>> > tags.
+
+=item abstract
+
+The extension abstract.
+
+=item dist
+
+The name of the distribution in which the extension is found.
+
+=item version
+
+The version of the distribution in which the extension is found.
+
+=item date
+
+The distribution date.
+
+=item nickname
+
+The nickname of the user who created the distribution.
+
+=item username
+
+The full name of the user who created the distribution.
+
+=back
+
+=item user
+
+Full text search of PGXN users. The C<hits> hashes will hae the following
+keys:
+
+=over
+
+=item nickname
+
+The user's nickname.
+
+=item name
+
+The user's full name.
+
+=item uri
+
+The user's URI
+
+=item excerpt
+
+An excerpt from the user with the search keywords highlighted in
+ C< <<strong>> > tags.
+
+=back
+
+=item tag
+
+Full text search of PGXN tags. The C<hits> hashes will hae the following keys:
+
+=over
+
+=item name
+
+The tag name.
+
+=back
 
 =back
 
