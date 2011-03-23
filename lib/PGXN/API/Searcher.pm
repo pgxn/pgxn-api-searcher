@@ -34,7 +34,7 @@ my %highlightable = (
 );
 
 my %fields = (
-    doc       => [qw(title abstract dist version date nickname username)],
+    doc       => [qw(title abstract dist version path date nickname username)],
     dist      => [qw(name version abstract date nickname username)],
     extension => [qw(name abstract dist version date nickname username)],
     user      => [qw(nickname name uri)],
