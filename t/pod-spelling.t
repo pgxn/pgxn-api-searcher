@@ -19,3 +19,4 @@ lifecycle
 browsable
 UTF
 pgxn
+uri

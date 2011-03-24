@@ -34,11 +34,11 @@ my %highlightable = (
 );
 
 my %fields = (
-    doc       => [qw(title abstract dist version path date nickname username)],
-    dist      => [qw(name version abstract date nickname username)],
-    extension => [qw(name abstract dist version date nickname username)],
-    user      => [qw(nickname name uri)],
-    tag       => [qw(name)],
+    doc       => [qw(title abstract dist version path date user user_name)],
+    dist      => [qw(dist version abstract date user user_name)],
+    extension => [qw(extension abstract dist version date user user_name)],
+    user      => [qw(user name uri)],
+    tag       => [qw(tag)],
 );
 
 sub search {
@@ -155,7 +155,7 @@ the indexes, and the values are L<KinoSearch::Search::QueryParser> objects.
   my $results = $search->search( doc => { query => $q });
 
 Queries the search index and returns a hash reference with the results. The
-first argument specifies the index to query. The posible values are covered
+first argument specifies the index to query. The possible values are covered
 below. The parameters supported in the hash reference second argument are:
 
 =over
@@ -195,7 +195,7 @@ The number of hits skipped.
 
 =item count
 
-The total count of hits, without regard to C<limit> or C<offset>. Usefor for
+The total count of hits, without regard to C<limit> or C<offset>. Use for
 laying out pagination links.
 
 =item hits
@@ -211,7 +211,7 @@ The first argument must be the name of the index. The possible values are:
 
 =item doc
 
-Full text indexing of PGXN documentation. The C<hits> hashes will hae the
+Full text indexing of PGXN documentation. The C<hits> hashes will have the
 following keys:
 
 =over
@@ -245,11 +245,11 @@ The path to the document within the distribution.
 
 The distribution date.
 
-=item nickname
+=item user
 
 The nickname of the user who created the distribution.
 
-=item username
+=item user_name
 
 The full name of the user who created the distribution.
 
@@ -257,7 +257,7 @@ The full name of the user who created the distribution.
 
 =item dist
 
-Full text search of PGXN distributions. The C<hits> hashes will hae the
+Full text search of PGXN distributions. The C<hits> hashes will have the
 following keys:
 
 =over
@@ -283,21 +283,19 @@ The distribution abstract.
 
 The distribution date.
 
-=item nickname
+=item user
 
 The nickname of the user who created the distribution.
 
-=item username
+=item user_name
 
 The full name of the user who created the distribution.
 
 =back
 
-=back
-
 =item extension
 
-Full text search of PGXN extensions. The C<hits> hashes will hae the following
+Full text search of PGXN extensions. The C<hits> hashes will have the following
 keys:
 
 =over
@@ -327,11 +325,11 @@ The version of the distribution in which the extension is found.
 
 The distribution date.
 
-=item nickname
+=item user
 
 The nickname of the user who created the distribution.
 
-=item username
+=item user_name
 
 The full name of the user who created the distribution.
 
@@ -339,12 +337,12 @@ The full name of the user who created the distribution.
 
 =item user
 
-Full text search of PGXN users. The C<hits> hashes will hae the following
+Full text search of PGXN users. The C<hits> hashes will have the following
 keys:
 
 =over
 
-=item nickname
+=item user
 
 The user's nickname.
 
@@ -365,7 +363,7 @@ An excerpt from the user with the search keywords highlighted in
 
 =item tag
 
-Full text search of PGXN tags. The C<hits> hashes will hae the following keys:
+Full text search of PGXN tags. The C<hits> hashes will have the following keys:
 
 =over
 
