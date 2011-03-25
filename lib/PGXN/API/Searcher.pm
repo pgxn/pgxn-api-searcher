@@ -3,6 +3,9 @@ package PGXN::API::Searcher v0.5.6;
 use 5.12.0;
 use utf8;
 use File::Spec;
+use KinoSearch::Search::IndexSearcher;
+use KinoSearch::Search::QueryParser;
+use KinoSearch::Highlight::Highlighter;
 use Carp;
 
 sub new {
