@@ -20,3 +20,5 @@ browsable
 UTF
 pgxn
 uri
+API
+JSON
