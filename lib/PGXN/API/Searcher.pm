@@ -13,7 +13,7 @@ sub new {
     my (%searchers, %parsers);
     for my $iname (qw(doc dist extension user tag)) {
         $searchers{$iname} = KinoSearch::Search::IndexSearcher->new(
-            index => File::Spec->catdir($path, $iname)
+            index => File::Spec->catdir($path, '_index', $iname)
         );
         $parsers{$iname} = KinoSearch::Search::QueryParser->new(
             schema => $searchers{$iname}->get_schema
@@ -103,7 +103,7 @@ PGXN::API::Searcher - PGXN API full text search interface
 
   use PGXN::API::Searcher;
   use JSON;
-  my $search = PGXN::API::Searcher->new('/path/to/index');
+  my $search = PGXN::API::Searcher->new('/path/to/api/root');
   encode_json $search->search(doc => { query => $query });
 
 =head1 Description
@@ -113,10 +113,10 @@ created by L<PGXN::API::Indexer>; this module parses search queries, executes
 them against the appropriate index, and returns the results as a hash suitable
 for serializing to L<JSON|http://json.org> for a response to a request.
 
-To use this module, one must have a path to the search indexes created by
-PGXN::API. That is, with access to the same file system. It is therefore use
-by PGXN::API itself to process search requests. It can also be used by
-WWW::PGXN if its mirror URI is specified as a C<file:> URI.
+To use this module, one must have a path to the API server document root
+created by PGXN::API. That is, with access to the same file system. It is
+therefore use by PGXN::API itself to process search requests. It can also be
+used by WWW::PGXN if its mirror URI is specified as a C<file:> URI.
 
 Unless you're creating a PGXN API of your own, or accessing one via the local
 file system (as L<PGXN::Site> does via L<WWW::PGXN>), you probably don't need
@@ -130,10 +130,10 @@ But in case you I<do> want to use this module, here are the gory details.
 
 =head3 C<new>
 
-  my $search = PGXN::API::Searcher->new('/path/to/pgxn/index');
+  my $search = PGXN::API::Searcher->new('/path/to/pgxn/api/root');
 
-Constructs a PGXN::API::Searcher object, pointing it to a valid PGXN::API full
-text search index path.
+Constructs a PGXN::API::Searcher object, pointing it to a valid PGXN::API root
+directory.
 
 =head2 Accessors
 

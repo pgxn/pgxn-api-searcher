@@ -258,7 +258,7 @@ for my $doc (
 $_->commit for values %indexers;
 
 # Okay, do some searches!
-my $search = new_ok $CLASS, [$dir], 'Instance';
+my $search = new_ok $CLASS, ['t'], 'Instance';
 ok my $res = $search->search(dist => {query => 'ordered pair'}),
     'Search docs for "ordered pair"';
 is_deeply $res, {
