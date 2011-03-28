@@ -45,15 +45,15 @@ my %fields = (
 );
 
 sub search {
-    my ($self, $params) = @_;
-    my $iname    = $params->{index} || 'doc';
+    my ($self, %params) = @_;
+    my $iname    = $params{index} || 'doc';
     my $searcher = $self->{searchers}{$iname} or croak "No $iname index";
-    my $query    = $self->{parsers}{$iname}->parse($params->{query});
-    my $limit    = ($params->{limit} ||= 50) < 1024 ? $params->{limit} : 50;
+    my $query    = $self->{parsers}{$iname}->parse($params{query});
+    my $limit    = ($params{limit} ||= 50) < 1024 ? $params{limit} : 50;
 
     my $hits = $searcher->hits(
         query      => $query,
-        offset     => $params->{offset},
+        offset     => $params{offset},
         num_wanted => $limit,
     );
 
@@ -62,7 +62,7 @@ sub search {
     if (my $field = $highlightable{$iname}) {
         my $h = KinoSearch::Highlight::Highlighter->new(
             searcher => $searcher,
-            query    => $params->{query},
+            query    => $params{query},
             field    => $field,
         );
         $highlighter = sub {
@@ -73,8 +73,9 @@ sub search {
     }
 
     my %ret = (
-        query  => $params->{query},
-        offset => $params->{offset} || 0,
+        query  => $params{query},
+        offset => $params{offset} || 0,
+        index  => $params{index} || 'doc',
         limit  => $limit,
         count  => $hits->total_hits,
         hits   => my $res = [],
@@ -191,6 +192,10 @@ The results will be returned as a hash with the following keys:
 =item query
 
 The query string. Same value as the C<query> parameter.
+
+=item index
+
+The name of the index searched.
 
 =item limit
 

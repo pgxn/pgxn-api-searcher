@@ -4,6 +4,8 @@ Revision history for Perl extension PGXN-API-Searcher.
       - The index to query is no longer specified as the first argument to
         `search()`, but via the new `index` parameter.
       - The `index` paraemter defaults to "doc" if it's not specified.
+      - Pass parameters to `search()` as a list rather than a hash reference.
+      - Add `index` key to the returned hash.
 
 0.6.0   2011-03-26T03:14:12
       - Initial version.

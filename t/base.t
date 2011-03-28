@@ -259,13 +259,14 @@ $_->commit for values %indexers;
 
 # Okay, do some searches!
 my $search = new_ok $CLASS, ['t'], 'Instance';
-ok my $res = $search->search({query => 'ordered pair', index => 'dist'}),
+ok my $res = $search->search(query => 'ordered pair', index => 'dist'),
     'Search docs for "ordered pair"';
 is_deeply $res, {
     query  => "ordered pair",
     limit  => 50,
     offset => 0,
     count  => 2,
+    index  => 'dist',
     hits   => [
         {
             abstract  => "A key/value pair data type",
@@ -291,41 +292,42 @@ is_deeply $res, {
 }, 'Should have results for simple search';
 
 # Test offset.
-ok $res = $search->search({
+ok $res = $search->search(
     index  => 'dist',
     query  => 'ordered pair',
     offset => 1,
-}), 'Search with offset';
+), 'Search with offset';
 is $res->{count}, 2, 'Count should be 2';
 is @{ $res->{hits} }, 1, 'Should have one hit';
 is $res->{hits}[0]{dist}, 'semver', 'It should be the second record';
 
 # Try limit.
-ok $res = $search->search({
+ok $res = $search->search(
     index => 'dist',
     query => 'ordered pair',
     limit => 1,
-}), 'Search with limit';
+), 'Search with limit';
 is $res->{count}, 2, 'Count should again be 2';
 is @{ $res->{hits} }, 1, 'Should again have one hit';
 is $res->{hits}[0]{dist}, 'pair', 'It should be the first record';
 
 # Exceed the limit.
-ok $res = $search->search({
+ok $res = $search->search(
     index => 'dist',
     query => 'ordered pair',
     limit => 2048,
-}), 'Search with excessive limit';
+), 'Search with excessive limit';
 is $res->{limit}, 50, 'Excessive limit should be ignored';
 
 # Search for other stuff.
-ok $res = $search->search({ query => 'nifty'}),
+ok $res = $search->search( query => 'nifty' ),
     'Seach the docs';
 is_deeply $res, {
     query  => "nifty",
     limit  => 50,
     offset => 0,
     count  => 1,
+    index  => 'doc',
     hits   => [
         {
             abstract => "A key/value pair data type",
@@ -342,13 +344,14 @@ is_deeply $res, {
     ],
 }, 'Should have expected structure for implicit docs search';
 
-ok $res = $search->search({ query => 'nifty', index => 'doc'}),
+ok $res = $search->search( query => 'nifty', index => 'doc' ),
     'Seach the docs';
 is_deeply $res, {
     query  => "nifty",
     limit  => 50,
     offset => 0,
     count  => 1,
+    index  => 'doc',
     hits   => [
         {
             abstract => "A key/value pair data type",
@@ -365,13 +368,14 @@ is_deeply $res, {
     ],
 }, 'Should have expected structure for docs';
 
-ok $res = $search->search({ query => 'semantic', index => 'extension' }),
+ok $res = $search->search( query => 'semantic', index => 'extension' ),
     'Seach extensions';
 is_deeply $res, {
     query  => "semantic",
     limit  => 50,
     offset => 0,
     count  => 2,
+    index  => 'extension',
     hits   => [
         {
             abstract  => "A semantic version data type",
@@ -399,12 +403,13 @@ is_deeply $res, {
 }, 'Should have expected structure for extensions';
 
 
-ok $res = $search->search({ query => 'Davidson', index => 'user' }), 'Seach users';
+ok $res = $search->search( query => 'Davidson', index => 'user' ), 'Seach users';
 is_deeply $res, {
     query  => "Davidson",
     limit  => 50,
     offset => 0,
     count  => 1,
+    index  => 'user',
     hits   => [
         {
             excerpt => "roger\nRoger is a <strong>Davidson</strong>. Har har.",
@@ -416,12 +421,13 @@ is_deeply $res, {
     ],
 }, 'Should have expected structure for users';
 
-ok $res = $search->search({ query => 'version', index => 'tag' }), 'Seach tags';
+ok $res = $search->search( query => 'version', index => 'tag' ), 'Seach tags';
 is_deeply $res, {
     query  => "version",
     limit  => 50,
     offset => 0,
     count  => 2,
+    index  => 'tag',
     hits   => [
         { tag => "version", score => "2.440" },
         { tag => "semantic version", score => "0.292" },
