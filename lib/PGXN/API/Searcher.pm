@@ -45,7 +45,8 @@ my %fields = (
 );
 
 sub search {
-    my ($self, $iname, $params) = @_;
+    my ($self, $params) = @_;
+    my $iname    = $params->{index} || 'doc';
     my $searcher = $self->{searchers}{$iname} or croak "No $iname index";
     my $query    = $self->{parsers}{$iname}->parse($params->{query});
     my $limit    = ($params->{limit} ||= 50) < 1024 ? $params->{limit} : 50;
@@ -104,23 +105,23 @@ PGXN::API::Searcher - PGXN API full text search interface
   use PGXN::API::Searcher;
   use JSON;
   my $search = PGXN::API::Searcher->new('/path/to/api/root');
-  encode_json $search->search(doc => { query => $query });
+  encode_json $search->search({ query => $query, index => 'doc' });
 
 =head1 Description
 
 This module encapsulates the PGXN API search functionality. The indexes are
 created by L<PGXN::API::Indexer>; this module parses search queries, executes
 them against the appropriate index, and returns the results as a hash suitable
-for serializing to L<JSON|http://json.org> for a response to a request.
+for serializing to L<JSON|http://json.org/> in response to a request.
 
 To use this module, one must have a path to the API server document root
 created by PGXN::API. That is, with access to the same file system. It is
-therefore use by PGXN::API itself to process search requests. It can also be
+therefore used by PGXN::API itself to process search requests. It will also be
 used by WWW::PGXN if its mirror URI is specified as a C<file:> URI.
 
 Unless you're creating a PGXN API of your own, or accessing one via the local
-file system (as L<PGXN::Site> does via L<WWW::PGXN>), you probably don't need
-this module. Best to just use L<WWW::PGXN>.
+file system, you probably don't need this module. Best to just use
+L<WWW::PGXN>.
 
 But in case you I<do> want to use this module, here are the gory details.
 
@@ -155,11 +156,10 @@ the indexes, and the values are L<KinoSearch::Search::QueryParser> objects.
 
 =head3 C<search>
 
-  my $results = $search->search( doc => { query => $q });
+  my $results = $search->search({ index => 'doc', query => $q });
 
-Queries the search index and returns a hash reference with the results. The
-first argument specifies the index to query. The possible values are covered
-below. The parameters supported in the hash reference second argument are:
+Queries the specified index and returns a hash reference with the results. The
+parameters supported in the hash reference second argument are:
 
 =over
 
@@ -167,6 +167,11 @@ below. The parameters supported in the hash reference second argument are:
 
 The search query. See L<KinoSearch::Search::QueryParser> for the supported
 syntax of the query. Required.
+
+=item index
+
+The name of the search index to query. The default is "doc". The possible
+values are covered below.
 
 =item offset
 
@@ -208,7 +213,8 @@ the hashes depend on which index was searched. See below for that information.
 
 =back
 
-The first argument must be the name of the index. The possible values are:
+The structure of the C<hits> hash reference depends on which index is
+specified via the C<index> parameter. The possible values are:
 
 =over
 

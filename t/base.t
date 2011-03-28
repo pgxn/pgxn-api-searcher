@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use utf8;
-use Test::More tests => 23;
+use Test::More tests => 25;
 #use Test::More 'no_plan';
 use KinoSearch::Plan::Schema;
 use KinoSearch::Plan::FullTextType;
@@ -259,7 +259,7 @@ $_->commit for values %indexers;
 
 # Okay, do some searches!
 my $search = new_ok $CLASS, ['t'], 'Instance';
-ok my $res = $search->search(dist => {query => 'ordered pair'}),
+ok my $res = $search->search({query => 'ordered pair', index => 'dist'}),
     'Search docs for "ordered pair"';
 is_deeply $res, {
     query  => "ordered pair",
@@ -291,8 +291,9 @@ is_deeply $res, {
 }, 'Should have results for simple search';
 
 # Test offset.
-ok $res = $search->search(dist => {
-    query => 'ordered pair',
+ok $res = $search->search({
+    index  => 'dist',
+    query  => 'ordered pair',
     offset => 1,
 }), 'Search with offset';
 is $res->{count}, 2, 'Count should be 2';
@@ -300,7 +301,8 @@ is @{ $res->{hits} }, 1, 'Should have one hit';
 is $res->{hits}[0]{dist}, 'semver', 'It should be the second record';
 
 # Try limit.
-ok $res = $search->search(dist => {
+ok $res = $search->search({
+    index => 'dist',
     query => 'ordered pair',
     limit => 1,
 }), 'Search with limit';
@@ -309,14 +311,38 @@ is @{ $res->{hits} }, 1, 'Should again have one hit';
 is $res->{hits}[0]{dist}, 'pair', 'It should be the first record';
 
 # Exceed the limit.
-ok $res = $search->search(dist => {
+ok $res = $search->search({
+    index => 'dist',
     query => 'ordered pair',
     limit => 2048,
 }), 'Search with excessive limit';
 is $res->{limit}, 50, 'Excessive limit should be ignored';
 
 # Search for other stuff.
-ok $res = $search->search(doc => { query => 'nifty'}),
+ok $res = $search->search({ query => 'nifty'}),
+    'Seach the docs';
+is_deeply $res, {
+    query  => "nifty",
+    limit  => 50,
+    offset => 0,
+    count  => 1,
+    hits   => [
+        {
+            abstract => "A key/value pair data type",
+            date      => "2010-10-18T15:24:21Z",
+            dist      => "pair",
+            excerpt   => "The ordered pair data type is <strong>nifty</strong>, I tell ya!",
+            path      => "doc/pair",
+            score     => "0.015",
+            title     => "pair 0.1.0",
+            user      => "theory",
+            user_name => "David E. Wheeler",
+            version   => "0.1.0",
+        },
+    ],
+}, 'Should have expected structure for implicit docs search';
+
+ok $res = $search->search({ query => 'nifty', index => 'doc'}),
     'Seach the docs';
 is_deeply $res, {
     query  => "nifty",
@@ -339,7 +365,7 @@ is_deeply $res, {
     ],
 }, 'Should have expected structure for docs';
 
-ok $res = $search->search(extension => { query => 'semantic'}),
+ok $res = $search->search({ query => 'semantic', index => 'extension' }),
     'Seach extensions';
 is_deeply $res, {
     query  => "semantic",
@@ -373,7 +399,7 @@ is_deeply $res, {
 }, 'Should have expected structure for extensions';
 
 
-ok $res = $search->search(user => { query => 'Davidson'}), 'Seach users';
+ok $res = $search->search({ query => 'Davidson', index => 'user' }), 'Seach users';
 is_deeply $res, {
     query  => "Davidson",
     limit  => 50,
@@ -390,7 +416,7 @@ is_deeply $res, {
     ],
 }, 'Should have expected structure for users';
 
-ok $res = $search->search(tag => { query => 'version'}), 'Seach tags';
+ok $res = $search->search({ query => 'version', index => 'tag' }), 'Seach tags';
 is_deeply $res, {
     query  => "version",
     limit  => 50,
