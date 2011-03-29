@@ -106,7 +106,7 @@ PGXN::API::Searcher - PGXN API full text search interface
   use PGXN::API::Searcher;
   use JSON;
   my $search = PGXN::API::Searcher->new('/path/to/api/root');
-  encode_json $search->search({ query => $query, index => 'doc' });
+  encode_json $search->search( query => $query, index => 'doc' );
 
 =head1 Description
 
@@ -157,7 +157,7 @@ the indexes, and the values are L<KinoSearch::Search::QueryParser> objects.
 
 =head3 C<search>
 
-  my $results = $search->search({ index => 'doc', query => $q });
+  my $results = $search->search( index => 'doc', query => $q );
 
 Queries the specified index and returns a hash reference with the results. The
 parameters supported in the hash reference second argument are:
@@ -286,8 +286,8 @@ The distribution version.
 
 =item excerpt
 
-An excerpt from the distribution with the search keywords highlighted in C<
-<<strong>> > tags.
+An excerpt from the distribution with the search keywords highlighted in
+C<< <strong> >> tags.
 
 =item abstract
 
@@ -321,7 +321,7 @@ The name of the extension.
 =item excerpt
 
 An excerpt from the extension with the search keywords highlighted in
-C<<<strong>> > tags.
+C<< <strong> >> tags.
 
 =item abstract
 
@@ -392,6 +392,45 @@ Full text search of PGXN tags. The C<hits> hashes will have the following keys:
 The tag name.
 
 =back
+
+=back
+
+=head1 Support
+
+This module is stored in an open L<GitHub
+repository|http://github.com/theory/pgxn-api-searcher/>. Feel free to fork and
+contribute!
+
+Please file bug reports via L<GitHub
+Issues|http://github.com/theory/pgxn-api-searcher/issues/> or by sending mail to
+L<bug-PGXN-API-Searcher@rt.cpan.org|mailto:bug-PGXN-API-Searcher@rt.cpan.org>.
+
+=head1 See Also
+
+=over
+
+=item L<PGXN::Manager>
+
+The heart of any PGXN network, PGXN::Manager manages distribution uploads and
+mirror maintenance. You'll want to look at it if you plan to build your own
+network.
+
+=item L<WWW::PGXN>
+
+A Perl interface over a PGXN mirror or API. Able to read the mirror or API via
+HTTP or from the local file system. Use L<PGXN::API::Searcher> when the
+specified API URI maps to the local file system.
+
+=item L<PGXN::Site>
+
+A layer over the PGXN API providing a nicely-formatted Web site for folks to
+perform full text searches, read documentation, or browse information about
+users, distributions, tags, and extensions.
+
+=item L<PGXN::API>
+
+Creates the full text indexes used by PGXN::API::Searcher>. Also uses
+PGXN::API::Searcher to manage C</search> HTTP requests.
 
 =back
 
