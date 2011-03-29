@@ -1,5 +1,7 @@
 Revision history for Perl extension PGXN-API-Searcher.
 
+0.6.3
+
 0.6.2   2011-03-29T01:13:48
       - Updated for "doc" changes in PGXN::API v0.6.6:
         + The "path" key in doc results has been renamed "doc".
