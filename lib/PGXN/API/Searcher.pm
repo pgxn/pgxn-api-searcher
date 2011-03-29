@@ -37,9 +37,9 @@ my %highlightable = (
 );
 
 my %fields = (
-    doc       => [qw(title abstract dist version path date user user_name)],
+    doc       => [qw(title abstract dist version doc date user user_name)],
     dist      => [qw(dist version abstract date user user_name)],
-    extension => [qw(extension abstract dist version date user user_name)],
+    extension => [qw(extension abstract dist version doc date user user_name)],
     user      => [qw(user name uri)],
     tag       => [qw(tag)],
 );
@@ -251,7 +251,7 @@ The name of the distribution in which the document is found.
 
 The version of the distribution in which the document is found.
 
-=item path
+=item doc
 
 The path to the document within the distribution.
 
@@ -320,8 +320,8 @@ The name of the extension.
 
 =item excerpt
 
-An excerpt from the extension with the search keywords highlighted in C<
-<<strong>> > tags.
+An excerpt from the extension with the search keywords highlighted in
+C<<<strong>> > tags.
 
 =item abstract
 
@@ -334,6 +334,12 @@ The name of the distribution in which the extension is found.
 =item version
 
 The version of the distribution in which the extension is found.
+
+=item doc
+
+The path to the extension's documentation within the distribution. This is the
+same format as used for the "doc" key in doc results, and as used by the "doc"
+URI template.
 
 =item date
 
