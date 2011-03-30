@@ -404,7 +404,7 @@ is_deeply $res, {
             user      => "roger",
             user_name => "Roger Davidson",
             version   => "1.3.4",
-                },
+        },
     ],
 }, 'Should have expected structure for extensions';
 
