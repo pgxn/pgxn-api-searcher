@@ -22,3 +22,4 @@ pgxn
 uri
 API
 JSON
+dists
