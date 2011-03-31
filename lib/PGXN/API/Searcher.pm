@@ -1,4 +1,4 @@
-package PGXN::API::Searcher v0.6.3;
+package PGXN::API::Searcher v0.7.0;
 
 use 5.12.0;
 use utf8;
@@ -11,7 +11,7 @@ use Carp;
 sub new {
     my ($class, $path) = @_;
     my (%searchers, %parsers);
-    for my $iname (qw(doc dist extension user tag)) {
+    for my $iname (qw(docs dists extensions users tags)) {
         $searchers{$iname} = KinoSearch::Search::IndexSearcher->new(
             index => File::Spec->catdir($path, '_index', $iname)
         );
@@ -26,27 +26,27 @@ sub new {
 }
 
 sub searchers { shift->{searchers} }
-sub parsers { shift->{parsers} }
+sub parsers   { shift->{parsers}   }
 
 my %highlightable = (
-    doc       => 'body',
-    dist      => 'readme',
-    extension => 'abstract',
-    user      => 'details',
-    tag       => undef,
+    docs       => 'body',
+    dists      => 'readme',
+    extensions => 'abstract',
+    users      => 'details',
+    tags       => undef,
 );
 
 my %fields = (
-    doc       => [qw(title abstract dist version doc date user user_name)],
-    dist      => [qw(dist version abstract date user user_name)],
-    extension => [qw(extension abstract dist version doc date user user_name)],
-    user      => [qw(user name uri)],
-    tag       => [qw(tag)],
+    docs       => [qw(title abstract dist version doc date user user_name)],
+    dists      => [qw(dist version abstract date user user_name)],
+    extensions => [qw(extension abstract dist version doc date user user_name)],
+    users      => [qw(user name uri)],
+    tags       => [qw(tag)],
 );
 
 sub search {
     my ($self, %params) = @_;
-    my $iname    = $params{index} || 'doc';
+    my $iname    = $params{in} || 'docs';
     my $searcher = $self->{searchers}{$iname} or croak "No $iname index";
     my $query    = $self->{parsers}{$iname}->parse($params{query});
     my $limit    = ($params{limit} ||= 50) < 1024 ? $params{limit} : 50;
@@ -75,7 +75,6 @@ sub search {
     my %ret = (
         query  => $params{query},
         offset => $params{offset} || 0,
-        index  => $params{index} || 'doc',
         limit  => $limit,
         count  => $hits->total_hits,
         hits   => my $res = [],
@@ -106,7 +105,7 @@ PGXN::API::Searcher - PGXN API full text search interface
   use PGXN::API::Searcher;
   use JSON;
   my $search = PGXN::API::Searcher->new('/path/to/api/root');
-  encode_json $search->search( query => $query, index => 'doc' );
+  encode_json $search->search( query => $query, in => 'doc' );
 
 =head1 Description
 
@@ -157,7 +156,7 @@ the indexes, and the values are L<KinoSearch::Search::QueryParser> objects.
 
 =head3 C<search>
 
-  my $results = $search->search( index => 'doc', query => $q );
+  my $results = $search->search( in => 'docs', query => $q );
 
 Queries the specified index and returns a hash reference with the results. The
 parameters supported in the hash reference second argument are:
@@ -169,10 +168,10 @@ parameters supported in the hash reference second argument are:
 The search query. See L<KinoSearch::Search::QueryParser> for the supported
 syntax of the query. Required.
 
-=item index
+=item in
 
-The name of the search index to query. The default is "doc". The possible
-values are covered below.
+The name of the search index in which to run the query. The default is "docs".
+The possible values are covered below.
 
 =item offset
 
@@ -192,10 +191,6 @@ The results will be returned as a hash with the following keys:
 =item query
 
 The query string. Same value as the C<query> parameter.
-
-=item index
-
-The name of the index searched.
 
 =item limit
 
@@ -223,7 +218,7 @@ specified via the C<index> parameter. The possible values are:
 
 =over
 
-=item doc
+=item docs
 
 Full text indexing of PGXN documentation. The C<hits> hashes will have the
 following keys:
@@ -269,7 +264,7 @@ The full name of the user who created the distribution.
 
 =back
 
-=item dist
+=item dists
 
 Full text search of PGXN distributions. The C<hits> hashes will have the
 following keys:
@@ -307,7 +302,7 @@ The full name of the user who created the distribution.
 
 =back
 
-=item extension
+=item extensions
 
 Full text search of PGXN extensions. The C<hits> hashes will have the following
 keys:
@@ -355,7 +350,7 @@ The full name of the user who created the distribution.
 
 =back
 
-=item user
+=item users
 
 Full text search of PGXN users. The C<hits> hashes will have the following
 keys:
@@ -381,7 +376,7 @@ An excerpt from the user with the search keywords highlighted in
 
 =back
 
-=item tag
+=item tags
 
 Full text search of PGXN tags. The C<hits> hashes will have the following keys:
 

@@ -1,4 +1,4 @@
-PGXN/API/Search v0.6.3
+PGXN/API/Search v0.7.0
 ======================
 
 This library's module, PGXN::API::Searcher, provides an interface to the

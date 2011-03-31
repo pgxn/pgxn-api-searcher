@@ -1,7 +1,11 @@
 Revision history for Perl extension PGXN-API-Searcher.
 
-0.6.3
+0.7.0
       - Augmented the docs a bit.
+      - Updated for new index names in PGXN::API v0.7.0.
+      - Changed the index parameter name from `index` to `in`. And of course
+        they're now all required to be plural.
+      - Removed the `index` key from the results.
 
 0.6.2   2011-03-29T01:13:48
       - Updated for "doc" changes in PGXN::API v0.6.6:

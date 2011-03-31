@@ -70,7 +70,7 @@ INDEX: {
     );
 
     for my $spec (
-        [ doc => [
+        [ docs => [
             [ key         => $indexed ],
             [ title       => $fti     ],
             [ abstract    => $fti     ],
@@ -82,7 +82,7 @@ INDEX: {
             [ user        => $stored  ],
             [ user_name   => $stored  ],
         ]],
-        [ dist => [
+        [ dists => [
             [ key         => $indexed ],
             [ dist        => $fti     ],
             [ abstract    => $fti     ],
@@ -94,7 +94,7 @@ INDEX: {
             [ user_name   => $stored  ],
             [ user        => $stored  ],
         ]],
-        [ extension => [
+        [ extensions => [
             [ key         => $indexed ],
             [ extension   => $fti     ],
             [ abstract    => $ftih    ],
@@ -105,7 +105,7 @@ INDEX: {
             [ user_name   => $stored  ],
             [ user        => $stored  ],
         ]],
-        [ user => [
+        [ users => [
             [ key         => $indexed ],
             [ user        => $fti     ],
             [ name        => $fti     ],
@@ -113,7 +113,7 @@ INDEX: {
             [ uri         => $indexed ],
             [ details     => $ftih    ],
         ]],
-        [ tag => [
+        [ tags => [
             [ key         => $indexed ],
             [ tag         => $fti     ],
         ]],
@@ -135,7 +135,7 @@ INDEX: {
 for my $doc (
     # Distribution "pair"
     {
-        type        => 'dist',
+        type        => 'dists',
         abstract    => 'A key/value pair data type',
         date        => '2010-10-18T15:24:21Z',
         description => "This library contains a single PostgreSQL extension, a key/value pair data type called `pair`, along with a convenience function for constructing key/value pairs.",
@@ -148,7 +148,7 @@ for my $doc (
         version     => '0.1.0',
     },
     {
-        type      => 'extension',
+        type      => 'extensions',
         abstract  => 'A key/value pair data type',
         date      => '2010-10-18T15:24:21Z',
         dist      => 'pair',
@@ -160,7 +160,7 @@ for my $doc (
         version   => '0.1.0',
     },
     {
-        type     => 'user',
+        type     => 'users',
         details  => "theory\nDavid has a bio, yo. Perl and SQL and stuff",
         email    => 'david@example.com',
         key      => 'theory',
@@ -169,17 +169,17 @@ for my $doc (
         uri      => 'http://justatheory.com/',
     },
     {
-        type => 'tag',
+        type => 'tags',
         key  => 'pair',
         tag  => 'pair',
     },
     {
-        type => 'tag',
+        type => 'tags',
         key  => 'key value',
         tag  => 'key value',
     },
     {
-        type      => 'doc',
+        type      => 'docs',
         abstract  => 'A key/value pair data type',
         body      => 'The ordered pair data type is nifty, I tell ya!',
         date      => '2010-10-18T15:24:21Z',
@@ -194,7 +194,7 @@ for my $doc (
 
     # Distribution "semver".
     {
-        type        => 'dist',
+        type        => 'dists',
         abstract    => 'A semantic version data type',
         date        => '2010-10-18T15:24:21Z',
         description => 'Provides a data domain the enforces the Semantic Version format and includes support for operator-driven sort ordering.',
@@ -207,7 +207,7 @@ for my $doc (
         version     => '2.1.3',
     },
     {
-        type      => 'extension',
+        type      => 'extensions',
         abstract  => 'A semantic version data type',
         date      => '2011-03-21T23:49:28Z',
         dist      => 'semver',
@@ -219,7 +219,7 @@ for my $doc (
         version   => '1.3.4',
     },
     {
-        type      => 'extension',
+        type      => 'extensions',
         abstract  => 'A less than semantic version data type (scary)',
         date      => '2011-03-21T23:49:28Z',
         dist      => 'semver',
@@ -231,7 +231,7 @@ for my $doc (
         version   => '1.3.4',
     },
     {
-        type     => 'user',
+        type     => 'users',
         details  => "roger\nRoger is a Davidson. Har har.",
         email    => 'roger@example.com',
         key      => 'roger',
@@ -240,17 +240,17 @@ for my $doc (
         user     => 'roger',
     },
     {
-        type => 'tag',
+        type => 'tags',
         key  => 'semver',
         tag  => 'semver',
     },
     {
-        type => 'tag',
+        type => 'tags',
         key  => 'version',
         tag  => 'version',
     },
     {
-        type => 'tag',
+        type => 'tags',
         key  => 'semantic version',
         tag  => 'semantic version',
     },
@@ -263,14 +263,13 @@ $_->commit for values %indexers;
 
 # Okay, do some searches!
 my $search = new_ok $CLASS, ['t'], 'Instance';
-ok my $res = $search->search(query => 'ordered pair', index => 'dist'),
+ok my $res = $search->search(query => 'ordered pair', in => 'dists'),
     'Search docs for "ordered pair"';
 is_deeply $res, {
     query  => "ordered pair",
     limit  => 50,
     offset => 0,
     count  => 2,
-    index  => 'dist',
     hits   => [
         {
             abstract  => "A key/value pair data type",
@@ -297,7 +296,7 @@ is_deeply $res, {
 
 # Test offset.
 ok $res = $search->search(
-    index  => 'dist',
+    in     => 'dists',
     query  => 'ordered pair',
     offset => 1,
 ), 'Search with offset';
@@ -307,7 +306,7 @@ is $res->{hits}[0]{dist}, 'semver', 'It should be the second record';
 
 # Try limit.
 ok $res = $search->search(
-    index => 'dist',
+    in    => 'dists',
     query => 'ordered pair',
     limit => 1,
 ), 'Search with limit';
@@ -317,7 +316,7 @@ is $res->{hits}[0]{dist}, 'pair', 'It should be the first record';
 
 # Exceed the limit.
 ok $res = $search->search(
-    index => 'dist',
+    in    => 'dists',
     query => 'ordered pair',
     limit => 2048,
 ), 'Search with excessive limit';
@@ -331,7 +330,6 @@ is_deeply $res, {
     limit  => 50,
     offset => 0,
     count  => 1,
-    index  => 'doc',
     hits   => [
         {
             abstract => "A key/value pair data type",
@@ -348,14 +346,13 @@ is_deeply $res, {
     ],
 }, 'Should have expected structure for implicit docs search';
 
-ok $res = $search->search( query => 'nifty', index => 'doc' ),
+ok $res = $search->search( query => 'nifty', in => 'docs' ),
     'Seach the docs';
 is_deeply $res, {
     query  => "nifty",
     limit  => 50,
     offset => 0,
     count  => 1,
-    index  => 'doc',
     hits   => [
         {
             abstract => "A key/value pair data type",
@@ -372,14 +369,13 @@ is_deeply $res, {
     ],
 }, 'Should have expected structure for docs';
 
-ok $res = $search->search( query => 'semantic', index => 'extension' ),
+ok $res = $search->search( query => 'semantic', in => 'extensions' ),
     'Seach extensions';
 is_deeply $res, {
     query  => "semantic",
     limit  => 50,
     offset => 0,
     count  => 2,
-    index  => 'extension',
     hits   => [
         {
             abstract  => "A semantic version data type",
@@ -409,13 +405,12 @@ is_deeply $res, {
 }, 'Should have expected structure for extensions';
 
 
-ok $res = $search->search( query => 'Davidson', index => 'user' ), 'Seach users';
+ok $res = $search->search( query => 'Davidson', in => 'users' ), 'Seach users';
 is_deeply $res, {
     query  => "Davidson",
     limit  => 50,
     offset => 0,
     count  => 1,
-    index  => 'user',
     hits   => [
         {
             excerpt => "roger\nRoger is a <strong>Davidson</strong>. Har har.",
@@ -427,13 +422,12 @@ is_deeply $res, {
     ],
 }, 'Should have expected structure for users';
 
-ok $res = $search->search( query => 'version', index => 'tag' ), 'Seach tags';
+ok $res = $search->search( query => 'version', in => 'tags' ), 'Seach tags';
 is_deeply $res, {
     query  => "version",
     limit  => 50,
     offset => 0,
     count  => 2,
-    index  => 'tag',
     hits   => [
         { tag => "version", score => "2.440" },
         { tag => "semantic version", score => "0.292" },
