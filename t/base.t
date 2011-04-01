@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use utf8;
-use Test::More tests => 27;
+use Test::More tests => 29;
 #use Test::More 'no_plan';
 use KinoSearch::Plan::Schema;
 use KinoSearch::Plan::FullTextType;
@@ -322,26 +322,29 @@ ok $res = $search->search(
 ), 'Search with excessive limit';
 is $res->{limit}, 50, 'Excessive limit should be ignored';
 
-ok $res = $search->search(query => 'dist:pair', in => 'dists'),
-    'Search docs for "dist:pair"';
-is_deeply $res, {
-    query  => "dist:pair",
-    limit  => 50,
-    offset => 0,
-    count  => 1,
-    hits   => [
-        {
-            abstract  => "A key/value pair data type",
-            date      => "2010-10-18T15:24:21Z",
-            dist      => "pair",
-            excerpt   => "This is the pair README file. Here you will find all thingds related to pair, including installation information",
-            score     => "1.000",
-            user      => "theory",
-            user_name => "David E. Wheeler",
-            version   => "0.1.0",
-        },
-    ],
-}, 'Should have single result for dist:pair search';
+# Make sure : and = work.
+for my $op (qw(: =)) {
+    ok my $res = $search->search(query => 'dist:pair', in => 'dists'),
+        qq{Search docs for "dist${op}pair"};
+    is_deeply $res, {
+        query  => "dist:pair",
+        limit  => 50,
+        offset => 0,
+        count  => 1,
+        hits   => [
+            {
+                abstract  => "A key/value pair data type",
+                date      => "2010-10-18T15:24:21Z",
+                dist      => "pair",
+                excerpt   => "This is the pair README file. Here you will find all thingds related to pair, including installation information",
+                score     => "1.000",
+                user      => "theory",
+                user_name => "David E. Wheeler",
+                version   => "0.1.0",
+            },
+        ],
+    }, qq{Should have single result for dist${op}pair search};
+}
 
 # Search for other stuff.
 ok $res = $search->search( query => 'nifty' ),
