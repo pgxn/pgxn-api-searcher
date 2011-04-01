@@ -15,9 +15,10 @@ sub new {
         $searchers{$iname} = KinoSearch::Search::IndexSearcher->new(
             index => File::Spec->catdir($path, '_index', $iname)
         );
-        $parsers{$iname} = KinoSearch::Search::QueryParser->new(
+        my $p = $parsers{$iname} = KinoSearch::Search::QueryParser->new(
             schema => $searchers{$iname}->get_schema
-        )
+        );
+        $p->set_heed_colons(1);
     }
     bless {
         searchers => \%searchers,
