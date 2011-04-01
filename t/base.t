@@ -50,6 +50,11 @@ INDEX: {
         highlightable => 1,
     );
 
+    my $string = KinoSearch::Plan::StringType->new(
+        indexed => 1,
+        stored  => 1,
+    );
+
     my $indexed = KinoSearch::Plan::StringType->new(
         indexed => 1,
         stored  => 0,
@@ -109,8 +114,8 @@ INDEX: {
             [ key         => $indexed ],
             [ user        => $fti     ],
             [ name        => $fti     ],
-            [ email       => $indexed ],
-            [ uri         => $stored  ],
+            [ email       => $string  ],
+            [ uri         => $string  ],
             [ details     => $ftih    ],
         ]],
         [ tags => [
@@ -440,7 +445,7 @@ is_deeply $res, {
         {
             excerpt => "roger Roger is a <strong>Davidson</strong>. Har har.",
             name    => "Roger Davidson",
-            score   => "0.307",
+            score   => "0.272",
             uri     => 'http://roger.example.com/',
             user    => "roger",
         },
