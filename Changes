@@ -8,6 +8,8 @@ Revision history for Perl extension PGXN-API-Searcher.
         than just once in `new()`. Parsers are cached from `new()` on,
         however. This means that consumers can keep a PGXN::API::Searcher
         object persistent in memory without worrying about index invalidation.
+      - The API document root path passed to `new()` is now retained and
+        accessible via thew `doc_root()` accessor.
 
 0.7.0   2011-03-31T20:55:51
       - Augmented the docs a bit.

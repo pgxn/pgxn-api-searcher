@@ -33,13 +33,13 @@ sub new {
         );
     }
     bless {
-        path    => $path,
-        parsers => \%parsers,
+        doc_root => $path,
+        parsers  => \%parsers,
     } => $class;
 }
 
-sub path    { shift->{path}    }
-sub parsers { shift->{parsers} }
+sub doc_root { shift->{doc_root} }
+sub parsers  { shift->{parsers}  }
 
 my %highlightable = (
     docs       => 'body',
@@ -63,7 +63,7 @@ sub search {
     my $query    = $self->{parsers}{$iname}->parse($params{query})->as_ks_query;
     my $limit    = ($params{limit} ||= 50) < 1024 ? $params{limit} : 50;
     my $searcher = KinoSearch::Search::IndexSearcher->new(
-        index => File::Spec->catdir($self->path, '_index', $iname)
+        index => File::Spec->catdir($self->doc_root, '_index', $iname)
     );
 
     my $hits = $searcher->hits(
@@ -153,12 +153,11 @@ directory.
 
 =head2 Accessors
 
-=head3 C<searchers>
+=head3 C<doc_root>
 
-  my $doc_searcher = $search->searchers->{doc};
+  my $doc_root = $search->doc_root;
 
-Returns a hash reference of index search objects. The keys are the names of
-the indexes, and the values are L<KinoSearch::Search::IndexSearcher> objects.
+Returns the path to the document root passed to C<new()>.
 
 =head3 C<parsers>
 

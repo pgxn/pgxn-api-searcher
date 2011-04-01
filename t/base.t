@@ -21,7 +21,7 @@ BEGIN {
 
 can_ok $CLASS => qw(
     new
-    path
+    doc_root
     parsers
     search
 );
@@ -263,7 +263,7 @@ $_->commit for values %indexers;
 
 # Okay, do some searches!
 my $search = new_ok $CLASS, ['t'], 'Instance';
-is $search->path, 't', 'Path should be set';
+is $search->doc_root, 't', 'Doc root should be set';
 ok my $res = $search->search(query => 'ordered pair', in => 'dists'),
     'Search docs for "ordered pair"';
 is_deeply $res, {
