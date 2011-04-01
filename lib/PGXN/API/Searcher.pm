@@ -24,6 +24,7 @@ sub new {
 
         $parsers{$iname} = Search::Query::Parser->new(
             dialect          => 'KSx',
+            # Delete next line to switch to AND queries when network gets big.
             default_boolop   => '',
             query_class_opts => { default_field => \@fields },
             fields => { map { $_ => {
