@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use utf8;
-use Test::More tests => 29;
+use Test::More tests => 33;
 #use Test::More 'no_plan';
 use KinoSearch::Plan::Schema;
 use KinoSearch::Plan::FullTextType;
@@ -110,7 +110,7 @@ INDEX: {
             [ user        => $fti     ],
             [ name        => $fti     ],
             [ email       => $indexed ],
-            [ uri         => $indexed ],
+            [ uri         => $stored  ],
             [ details     => $ftih    ],
         ]],
         [ tags => [
@@ -161,7 +161,7 @@ for my $doc (
     },
     {
         type     => 'users',
-        details  => "theory\nDavid has a bio, yo. Perl and SQL and stuff",
+        details  => "theory David has a bio, yo. Perl and SQL and stuff",
         email    => 'david@example.com',
         key      => 'theory',
         name     => 'David E. Wheeler',
@@ -200,7 +200,7 @@ for my $doc (
         description => 'Provides a data domain the enforces the Semantic Version format and includes support for operator-driven sort ordering.',
         dist        => 'semver',
         key         => 'semver',
-        readme      => "README for the semver distribion. Installation instructions\n",,
+        readme      => "README for the semver distribion. Installation instructions",
         tags        => "semver\003version\003semantic version",
         user        => 'roger',
         user_name   => 'Roger Davidson',
@@ -232,7 +232,7 @@ for my $doc (
     },
     {
         type     => 'users',
-        details  => "roger\nRoger is a Davidson. Har har.",
+        details  => "roger Roger is a Davidson. Har har.",
         email    => 'roger@example.com',
         key      => 'roger',
         name     => 'Roger Davidson',
@@ -437,14 +437,49 @@ is_deeply $res, {
     count  => 1,
     hits   => [
         {
-            excerpt => "roger\nRoger is a <strong>Davidson</strong>. Har har.",
+            excerpt => "roger Roger is a <strong>Davidson</strong>. Har har.",
             name    => "Roger Davidson",
-            score   => "0.272",
-            uri     => undef,
+            score   => "0.307",
+            uri     => 'http://roger.example.com/',
             user    => "roger",
         },
     ],
 }, 'Should have expected structure for users';
+
+# Try a wildcard search
+ok $res = $search->search( query => 'user:t*', in => 'users' ), 'Seach user:t*';
+is_deeply $res, {
+    query  => "user:t*",
+    limit  => 50,
+    offset => 0,
+    count  => 1,
+    hits   => [
+        {
+            excerpt => "theory David has a bio, yo. Perl and SQL and stuff",
+            name     => 'David E. Wheeler',
+            score   => "0.100",
+            user     => 'theory',
+            uri      => 'http://justatheory.com/',
+        },
+    ],
+}, 'Should have expected result for user:t*';
+
+ok $res = $search->search( query => 'user:r*', in => 'users' ), 'Seach user:r*';
+is_deeply $res, {
+    query  => "user:r*",
+    limit  => 50,
+    offset => 0,
+    count  => 1,
+    hits   => [
+        {
+            excerpt => "roger Roger is a Davidson. Har har.",
+            name    => "Roger Davidson",
+            score   => "0.100",
+            uri     => 'http://roger.example.com/',
+            user    => "roger",
+        },
+    ],
+}, 'Should have expected result for user:r*';
 
 ok $res = $search->search( query => 'version', in => 'tags' ), 'Seach tags';
 is_deeply $res, {
