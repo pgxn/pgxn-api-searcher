@@ -4,6 +4,10 @@ Revision history for Perl extension PGXN-API-Searcher.
       - Switched to Search::Query::Parser for query parsing. There is a lot
         more syntax with this parser, including `field=` or `field:` queries,
         as well as wild cards.
+      - A searcher object is now created for every call to `search()`, rather
+        than just once in `new()`. Parsers are cached from `new()` on,
+        however. This means that consumers can keep a PGXN::API::Searcher
+        object persistent in memory without worrying about index invalidation.
 
 0.7.0   2011-03-31T20:55:51
       - Augmented the docs a bit.

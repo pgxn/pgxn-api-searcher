@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use utf8;
-use Test::More tests => 33;
+use Test::More tests => 34;
 #use Test::More 'no_plan';
 use KinoSearch::Plan::Schema;
 use KinoSearch::Plan::FullTextType;
@@ -21,7 +21,7 @@ BEGIN {
 
 can_ok $CLASS => qw(
     new
-    searchers
+    path
     parsers
     search
 );
@@ -263,6 +263,7 @@ $_->commit for values %indexers;
 
 # Okay, do some searches!
 my $search = new_ok $CLASS, ['t'], 'Instance';
+is $search->path, 't', 'Path should be set';
 ok my $res = $search->search(query => 'ordered pair', in => 'dists'),
     'Search docs for "ordered pair"';
 is_deeply $res, {

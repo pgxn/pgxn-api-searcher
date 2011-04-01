@@ -11,13 +11,12 @@ use Carp;
 
 sub new {
     my ($class, $path) = @_;
-    my (%searchers, %parsers);
+    my %parsers;
     for my $iname (qw(docs dists extensions users tags)) {
-        $searchers{$iname} = KinoSearch::Search::IndexSearcher->new(
+        my $schema = KinoSearch::Search::IndexSearcher->new(
             index => File::Spec->catdir($path, '_index', $iname)
-        );
+        )->get_schema;
 
-        my $schema = $searchers{$iname}->get_schema;
         my @fields = grep {
             $schema->fetch_type($_)->indexed
         } @{ $schema->all_fields };
@@ -34,13 +33,13 @@ sub new {
         );
     }
     bless {
-        searchers => \%searchers,
-        parsers   => \%parsers,
+        path    => $path,
+        parsers => \%parsers,
     } => $class;
 }
 
-sub searchers { shift->{searchers} }
-sub parsers   { shift->{parsers}   }
+sub path    { shift->{path}    }
+sub parsers { shift->{parsers} }
 
 my %highlightable = (
     docs       => 'body',
@@ -61,9 +60,11 @@ my %fields = (
 sub search {
     my ($self, %params) = @_;
     my $iname    = $params{in} || 'docs';
-    my $searcher = $self->{searchers}{$iname} or croak "No $iname index";
     my $query    = $self->{parsers}{$iname}->parse($params{query})->as_ks_query;
     my $limit    = ($params{limit} ||= 50) < 1024 ? $params{limit} : 50;
+    my $searcher = KinoSearch::Search::IndexSearcher->new(
+        index => File::Spec->catdir($self->path, '_index', $iname)
+    );
 
     my $hits = $searcher->hits(
         query      => $query,
@@ -164,7 +165,7 @@ the indexes, and the values are L<KinoSearch::Search::IndexSearcher> objects.
   my $doc_parser = $search->parsers->{doc};
 
 Returns a hash reference of search query parsers. The keys are the names of
-the indexes, and the values are L<KinoSearch::Search::QueryParser> objects.
+the indexes, and the values are L<Search::Query::Parser> objects.
 
 =head2 Instance Method
 
@@ -179,8 +180,9 @@ parameters supported in the hash reference second argument are:
 
 =item query
 
-The search query. See L<KinoSearch::Search::QueryParser> for the supported
-syntax of the query. Required.
+The search query. See L<Search::Query::Parser> and
+L<Search::Query::Dialect::KSx> for the supported syntax of the query.
+Required.
 
 =item in
 
