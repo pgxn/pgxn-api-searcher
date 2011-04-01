@@ -3,8 +3,9 @@ package PGXN::API::Searcher v0.7.1;
 use 5.12.0;
 use utf8;
 use File::Spec;
+use Search::Query::Parser;
+use Search::Query::Dialect::KSx;
 use KinoSearch::Search::IndexSearcher;
-use KinoSearch::Search::QueryParser;
 use KinoSearch::Highlight::Highlighter;
 use Carp;
 
@@ -15,10 +16,21 @@ sub new {
         $searchers{$iname} = KinoSearch::Search::IndexSearcher->new(
             index => File::Spec->catdir($path, '_index', $iname)
         );
-        my $p = $parsers{$iname} = KinoSearch::Search::QueryParser->new(
-            schema => $searchers{$iname}->get_schema
+
+        my $schema = $searchers{$iname}->get_schema;
+        my @fields = grep {
+            $schema->fetch_type($_)->indexed
+        } @{ $schema->all_fields };
+
+        $parsers{$iname} = Search::Query::Parser->new(
+            dialect          => 'KSx',
+            default_boolop   => '',
+            query_class_opts => { default_field => \@fields },
+            fields => { map { $_ => {
+                type     => $schema->fetch_type($_),
+                analyzer => $schema->fetch_analyzer($_),
+            } } @fields },
         );
-        $p->set_heed_colons(1);
     }
     bless {
         searchers => \%searchers,
@@ -49,7 +61,7 @@ sub search {
     my ($self, %params) = @_;
     my $iname    = $params{in} || 'docs';
     my $searcher = $self->{searchers}{$iname} or croak "No $iname index";
-    my $query    = $self->{parsers}{$iname}->parse($params{query});
+    my $query    = $self->{parsers}{$iname}->parse($params{query})->as_ks_query;
     my $limit    = ($params{limit} ||= 50) < 1024 ? $params{limit} : 50;
 
     my $hits = $searcher->hits(
