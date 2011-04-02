@@ -1,6 +1,6 @@
 Revision history for Perl extension PGXN-API-Searcher.
 
-0.7.1
+0.8.0
       - Switched to Search::Query::Parser for query parsing. There is a lot
         more syntax with this parser, including `field=` or `field:` queries,
         as well as wild cards.
