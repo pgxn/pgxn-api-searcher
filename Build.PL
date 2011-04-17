@@ -14,12 +14,10 @@ Module::Build->new(
         'Test::More'            => '0.96',
     },
     requires => {
-        'Carp'                        => 0,
-        'File::Spec'                  => 0,
-        'KinoSearch'                  => '0.311',
-        'perl'                        => 5.012,
-        'Search::Query::Dialect::KSx' => '0.13',
-        'Search::Query::Parser'       => '0.18',
+        'Carp'       => 0,
+        'File::Spec' => 0,
+        'KinoSearch' => '0.311',
+        'perl'       => 5.012,
       },
     recommends => {
         'Test::Pod'           => '1.41',

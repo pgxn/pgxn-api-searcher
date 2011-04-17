@@ -3,8 +3,7 @@ package PGXN::API::Searcher v0.9.0;
 use 5.12.0;
 use utf8;
 use File::Spec;
-use Search::Query::Parser;
-use Search::Query::Dialect::KSx;
+use KinoSearch::Search::QueryParser;
 use KinoSearch::Search::IndexSearcher;
 use KinoSearch::Highlight::Highlighter;
 use Carp;
@@ -13,24 +12,12 @@ sub new {
     my ($class, $path) = @_;
     my %parsers;
     for my $iname (qw(docs dists extensions users tags)) {
-        my $schema = KinoSearch::Search::IndexSearcher->new(
-            index => File::Spec->catdir($path, '_index', $iname)
-        )->get_schema;
-
-        my @fields = grep {
-            $schema->fetch_type($_)->indexed
-        } @{ $schema->all_fields };
-
-        $parsers{$iname} = Search::Query::Parser->new(
-            dialect          => 'KSx',
-            # Delete next line to switch to AND queries when network gets big.
-            default_boolop   => '',
-            query_class_opts => { default_field => \@fields },
-            fields => { map { $_ => {
-                type     => $schema->fetch_type($_),
-                analyzer => $schema->fetch_analyzer($_),
-            } } @fields },
+        my $p = $parsers{$iname} = KinoSearch::Search::QueryParser->new(
+            schema => KinoSearch::Search::IndexSearcher->new(
+                index => File::Spec->catdir($path, '_index', $iname)
+            )->get_schema,
         );
+        $p->set_heed_colons(1); # XXX Soon to be deprecated.
     }
     bless {
         doc_root => $path,
@@ -60,7 +47,7 @@ my %fields = (
 sub search {
     my ($self, %params) = @_;
     my $iname    = $params{in} || 'docs';
-    my $query    = $self->{parsers}{$iname}->parse($params{query})->as_ks_query;
+    my $query    = $self->{parsers}{$iname}->parse($params{query});
     my $limit    = ($params{limit} ||= 50) < 1024 ? $params{limit} : 50;
     my $searcher = KinoSearch::Search::IndexSearcher->new(
         index => File::Spec->catdir($self->doc_root, '_index', $iname)
@@ -164,7 +151,7 @@ Returns the path to the document root passed to C<new()>.
   my $doc_parser = $search->parsers->{doc};
 
 Returns a hash reference of search query parsers. The keys are the names of
-the indexes, and the values are L<Search::Query::Parser> objects.
+the indexes, and the values are L<KinoSearch::Search::QueryParser> objects.
 
 =head2 Instance Method
 
@@ -179,9 +166,8 @@ parameters supported in the hash reference second argument are:
 
 =item query
 
-The search query. See L<Search::Query::Parser> and
-L<Search::Query::Dialect::KSx> for the supported syntax of the query.
-Required.
+The search query. See L<KinoSearch::Search::QueryParser> for the supported
+syntax of the query. Required.
 
 =item in
 

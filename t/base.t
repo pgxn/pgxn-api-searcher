@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use utf8;
-use Test::More tests => 34;
+use Test::More tests => 28;
 #use Test::More 'no_plan';
 use KinoSearch::Plan::Schema;
 use KinoSearch::Plan::FullTextType;
@@ -452,49 +452,3 @@ is_deeply $res, {
     ],
 }, 'Should have expected structure for users';
 
-# Try a wildcard search
-ok $res = $search->search( query => 'user:t*', in => 'users' ), 'Seach user:t*';
-is_deeply $res, {
-    query  => "user:t*",
-    limit  => 50,
-    offset => 0,
-    count  => 1,
-    hits   => [
-        {
-            excerpt => "theory David has a bio, yo. Perl and SQL and stuff",
-            name     => 'David E. Wheeler',
-            score   => "0.100",
-            user     => 'theory',
-            uri      => 'http://justatheory.com/',
-        },
-    ],
-}, 'Should have expected result for user:t*';
-
-ok $res = $search->search( query => 'user:r*', in => 'users' ), 'Seach user:r*';
-is_deeply $res, {
-    query  => "user:r*",
-    limit  => 50,
-    offset => 0,
-    count  => 1,
-    hits   => [
-        {
-            excerpt => "roger Roger is a Davidson. Har har.",
-            name    => "Roger Davidson",
-            score   => "0.100",
-            uri     => 'http://roger.example.com/',
-            user    => "roger",
-        },
-    ],
-}, 'Should have expected result for user:r*';
-
-ok $res = $search->search( query => 'version', in => 'tags' ), 'Seach tags';
-is_deeply $res, {
-    query  => "version",
-    limit  => 50,
-    offset => 0,
-    count  => 2,
-    hits   => [
-        { tag => "version", score => "2.440" },
-        { tag => "semantic version", score => "0.292" },
-    ],
-}, 'Should have expected structure for tags';
