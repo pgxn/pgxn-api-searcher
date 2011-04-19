@@ -64,7 +64,7 @@ sub search {
     if (my $field = $highlightable{$iname}) {
         my $h = KinoSearch::Highlight::Highlighter->new(
             searcher => $searcher,
-            query    => $params{query},
+            query    => $query,
             field    => $field,
         );
         $highlighter = sub {
