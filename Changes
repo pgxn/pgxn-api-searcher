@@ -1,6 +1,6 @@
 Revision history for Perl extension PGXN-API-Searcher.
 
-0.9.0
+0.9.0   2011-04-20T05:35:52
       - Switched back to KinoSearch::Search::QueryParser. It's more tolerant
         of the crazy stuff users can submit, and with the addition of user
         lists in the latest version of PGXN::API, we no longer need wildcard
