@@ -37,9 +37,9 @@ my %highlightable = (
 );
 
 my %fields = (
-    docs       => [qw(title abstract dist version doc date user user_name)],
+    docs       => [qw(title abstract dist version docpath date user user_name)],
     dists      => [qw(dist version abstract date user user_name)],
-    extensions => [qw(extension abstract dist version doc date user user_name)],
+    extensions => [qw(extension abstract dist version docpath date user user_name)],
     users      => [qw(user name uri)],
     tags       => [qw(tag)],
 );
@@ -107,7 +107,7 @@ PGXN::API::Searcher - PGXN API full text search interface
   use PGXN::API::Searcher;
   use JSON;
   my $search = PGXN::API::Searcher->new('/path/to/api/root');
-  encode_json $search->search( query => $query, in => 'doc' );
+  encode_json $search->search( query => $query, in => 'docs' );
 
 =head1 Description
 
@@ -148,7 +148,7 @@ Returns the path to the document root passed to C<new()>.
 
 =head3 C<parsers>
 
-  my $doc_parser = $search->parsers->{doc};
+  my $doc_parser = $search->parsers->{docs};
 
 Returns a hash reference of search query parsers. The keys are the names of
 the indexes, and the values are L<KinoSearch::Search::QueryParser> objects.
@@ -247,7 +247,7 @@ The name of the distribution in which the document is found.
 
 The version of the distribution in which the document is found.
 
-=item doc
+=item docpath
 
 The path to the document within the distribution.
 
@@ -331,11 +331,11 @@ The name of the distribution in which the extension is found.
 
 The version of the distribution in which the extension is found.
 
-=item doc
+=item docpath
 
 The path to the extension's documentation within the distribution. This is the
-same format as used for the "doc" key in doc results, and as used by the "doc"
-URI template.
+same format as used for the "docpath" key in docs results, and as used by the
+"htmldoc" URI template.
 
 =item date
 

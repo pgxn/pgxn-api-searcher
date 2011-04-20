@@ -24,3 +24,5 @@ API
 JSON
 dists
 GitHub
+docpath
+htmldoc
