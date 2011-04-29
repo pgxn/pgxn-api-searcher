@@ -111,6 +111,12 @@ PGXN::API::Searcher - PGXN API full text search interface
 
 =head1 Description
 
+L<PGXN|http://pgxn.org> is a L<CPAN|http://cpan.org>-inspired network for
+distributing extensions for the L<PostgreSQL RDBMS|http://www.postgresql.org>.
+All of the infrastructure tools, however, have been designed to be used to
+create networks for distributing any kind of release distributions and for
+providing a lightweight static file JSON REST API.
+
 This module encapsulates the PGXN API search functionality. The indexes are
 created by L<PGXN::API::Indexer>; this module parses search queries, executes
 them against the appropriate index, and returns the results as a hash suitable
@@ -121,9 +127,10 @@ created by PGXN::API. That is, with access to the same file system. It is
 therefore used by PGXN::API itself to process search requests. It will also be
 used by WWW::PGXN if its mirror URI is specified as a C<file:> URI.
 
-Unless you're creating a PGXN API of your own, or accessing one via the local
-file system, you probably don't need this module. Best to just use
-L<WWW::PGXN>.
+Chances are, if you want to use the PGXN search API, what you really want to
+use is L<WWW::PGXN>. This module simply provides the low-level file system
+access to the search databases used by L<PGXN::API> and L<WWW::PGXN> to
+provide the search interfaces.
 
 But in case you I<do> want to use this module, here are the gory details.
 
