@@ -1,4 +1,4 @@
-package PGXN::API::Searcher v0.9.1;
+package PGXN::API::Searcher v0.9.2;
 
 use 5.12.0;
 use utf8;
