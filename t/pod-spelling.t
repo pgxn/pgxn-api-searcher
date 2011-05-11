@@ -26,3 +26,4 @@ dists
 GitHub
 docpath
 htmldoc
+CPAN

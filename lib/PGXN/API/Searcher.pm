@@ -1,12 +1,14 @@
-package PGXN::API::Searcher v0.9.3;
+package PGXN::API::Searcher;
 
-use 5.12.0;
+use 5.10.0;
 use utf8;
 use File::Spec;
 use KinoSearch::Search::QueryParser;
 use KinoSearch::Search::IndexSearcher;
 use KinoSearch::Highlight::Highlighter;
 use Carp;
+
+our $VERSION = v0.9.3;
 
 sub new {
     my ($class, $path) = @_;

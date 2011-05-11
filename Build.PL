@@ -17,7 +17,7 @@ Module::Build->new(
         'Carp'       => 0,
         'File::Spec' => 0,
         'KinoSearch' => '0.311',
-        'perl'       => 5.012,
+        'perl'       => 5.010,
       },
     recommends => {
         'Test::Pod'           => '1.41',
