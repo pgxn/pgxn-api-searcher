@@ -1,6 +1,7 @@
 Revision history for Perl extension PGXN-API-Searcher.
 
-0.9.3
+0.9.3   2011-05-12T18:11:02
+      - Backported to support Perl 5.10.
 
 0.9.2   2011-04-30T20:42:55
       - Updated tests to reflect indexing of user nickname and name in
