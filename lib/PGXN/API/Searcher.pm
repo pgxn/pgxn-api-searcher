@@ -8,7 +8,7 @@ use KinoSearch::Search::IndexSearcher;
 use KinoSearch::Highlight::Highlighter;
 use Carp;
 
-our $VERSION = v0.9.3;
+our $VERSION = v0.9.4;
 
 sub new {
     my ($class, $path) = @_;
