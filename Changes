@@ -1,5 +1,7 @@
 Revision history for Perl extension PGXN-API-Searcher.
 
+0.10.1
+
 0.10.0  2011-08-26T17:11:54Z
       - Upgraded from KinoSearch to Lucy.
 
