@@ -3,9 +3,9 @@ package PGXN::API::Searcher;
 use 5.10.0;
 use utf8;
 use File::Spec;
-use KinoSearch::Search::QueryParser;
-use KinoSearch::Search::IndexSearcher;
-use KinoSearch::Highlight::Highlighter;
+use Lucy::Search::QueryParser;
+use Lucy::Search::IndexSearcher;
+use Lucy::Highlight::Highlighter;
 use Carp;
 
 our $VERSION = v0.9.4;
@@ -14,8 +14,8 @@ sub new {
     my ($class, $path) = @_;
     my %parsers;
     for my $iname (qw(docs dists extensions users tags)) {
-        my $p = $parsers{$iname} = KinoSearch::Search::QueryParser->new(
-            schema => KinoSearch::Search::IndexSearcher->new(
+        my $p = $parsers{$iname} = Lucy::Search::QueryParser->new(
+            schema => Lucy::Search::IndexSearcher->new(
                 index => File::Spec->catdir($path, '_index', $iname)
             )->get_schema,
         );
@@ -51,7 +51,7 @@ sub search {
     my $iname    = $params{in} || 'docs';
     my $query    = $self->{parsers}{$iname}->parse($params{query});
     my $limit    = ($params{limit} ||= 50) < 1024 ? $params{limit} : 50;
-    my $searcher = KinoSearch::Search::IndexSearcher->new(
+    my $searcher = Lucy::Search::IndexSearcher->new(
         index => File::Spec->catdir($self->doc_root, '_index', $iname)
     );
 
@@ -64,7 +64,7 @@ sub search {
     # Arrange for highlighted excerpts to be created.
     my $highlighter;
     if (my $field = $highlightable{$iname}) {
-        my $h = KinoSearch::Highlight::Highlighter->new(
+        my $h = Lucy::Highlight::Highlighter->new(
             searcher => $searcher,
             query    => $query,
             field    => $field,
@@ -160,7 +160,7 @@ Returns the path to the document root passed to C<new()>.
   my $doc_parser = $search->parsers->{docs};
 
 Returns a hash reference of search query parsers. The keys are the names of
-the indexes, and the values are L<KinoSearch::Search::QueryParser> objects.
+the indexes, and the values are L<Lucy::Search::QueryParser> objects.
 
 =head2 Instance Method
 
@@ -175,7 +175,7 @@ parameters supported in the hash reference second argument are:
 
 =item query
 
-The search query. See L<KinoSearch::Search::QueryParser> for the supported
+The search query. See L<Lucy::Search::QueryParser> for the supported
 syntax of the query. Required.
 
 =item in

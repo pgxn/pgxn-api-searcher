@@ -5,11 +5,11 @@ use warnings;
 use utf8;
 use Test::More tests => 28;
 #use Test::More 'no_plan';
-use KinoSearch::Plan::Schema;
-use KinoSearch::Plan::FullTextType;
-use KinoSearch::Analysis::PolyAnalyzer;
-use KinoSearch::Analysis::Tokenizer;
-use KinoSearch::Index::Indexer;
+use Lucy::Plan::Schema;
+use Lucy::Plan::FullTextType;
+use Lucy::Analysis::PolyAnalyzer;
+use Lucy::Analysis::RegexTokenizer;
+use Lucy::Index::Indexer;
 use File::Spec::Functions qw(catdir);
 use File::Path 'remove_tree';
 
@@ -36,40 +36,40 @@ INDEX: {
         File::Path::make_path($dir);
     }
 
-    my $polyanalyzer = KinoSearch::Analysis::PolyAnalyzer->new(
+    my $polyanalyzer = Lucy::Analysis::PolyAnalyzer->new(
         language => 'en',
     );
 
-    my $fti = KinoSearch::Plan::FullTextType->new(
+    my $fti = Lucy::Plan::FullTextType->new(
         analyzer      => $polyanalyzer,
         highlightable => 0,
     );
 
-    my $ftih = KinoSearch::Plan::FullTextType->new(
+    my $ftih = Lucy::Plan::FullTextType->new(
         analyzer      => $polyanalyzer,
         highlightable => 1,
     );
 
-    my $string = KinoSearch::Plan::StringType->new(
+    my $string = Lucy::Plan::StringType->new(
         indexed => 1,
         stored  => 1,
     );
 
-    my $indexed = KinoSearch::Plan::StringType->new(
+    my $indexed = Lucy::Plan::StringType->new(
         indexed => 1,
         stored  => 0,
     );
 
-    my $stored = KinoSearch::Plan::StringType->new(
+    my $stored = Lucy::Plan::StringType->new(
         indexed => 0,
         stored  => 1,
     );
 
-    my $list = KinoSearch::Plan::FullTextType->new(
+    my $list = Lucy::Plan::FullTextType->new(
         indexed       => 1,
         stored        => 1,
         highlightable => 1,
-        analyzer      => KinoSearch::Analysis::Tokenizer->new(
+        analyzer      => Lucy::Analysis::RegexTokenizer->new(
             pattern => '[^\003]+'
         ),
     );
@@ -124,10 +124,10 @@ INDEX: {
         ]],
     ) {
         my ($name, $fields) = @{ $spec };
-        my $schema = KinoSearch::Plan::Schema->new;
+        my $schema = Lucy::Plan::Schema->new;
         $schema->spec_field(name => $_->[0], type => $_->[1] )
             for @{ $fields };
-        $indexers{$name} = KinoSearch::Index::Indexer->new(
+        $indexers{$name} = Lucy::Index::Indexer->new(
             index    => catdir($dir, $name),
             schema   => $schema,
             create   => 1,

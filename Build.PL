@@ -16,7 +16,7 @@ Module::Build->new(
     requires => {
         'Carp'       => 0,
         'File::Spec' => 0,
-        'KinoSearch' => '0.311',
+        'Lucy'       => '0.2.1',
         'perl'       => 5.010,
       },
     recommends => {
