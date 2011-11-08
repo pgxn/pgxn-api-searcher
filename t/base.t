@@ -3,7 +3,7 @@
 use strict;
 use warnings;
 use utf8;
-use Test::More tests => 28;
+use Test::More tests => 37;
 #use Test::More 'no_plan';
 use Lucy::Plan::Schema;
 use Lucy::Plan::FullTextType;
@@ -271,6 +271,10 @@ my $search = new_ok $CLASS, ['t'], 'Instance';
 is $search->doc_root, 't', 'Doc root should be set';
 ok my $res = $search->search(query => 'ordered pair', in => 'dists'),
     'Search docs for "ordered pair"';
+like delete $res->{hits}[0]{score}, qr/^\d+[.]\d+$/,
+    'First hit score should look like a score';
+like delete $res->{hits}[1]{score}, qr/^\d+[.]\d+$/,
+    'Second hit score should look like a score';
 is_deeply $res, {
     query  => "ordered pair",
     limit  => 50,
@@ -282,7 +286,6 @@ is_deeply $res, {
             date      => "2010-10-18T15:24:21Z",
             dist      => "pair",
             excerpt   => "This is the <strong>pair</strong> README file. Here you will find all thingds related to <strong>pair</strong>, including installation information",
-            score     => "0.317",
             user      => "theory",
             user_name => "David E. Wheeler",
             version   => "0.1.0",
@@ -292,7 +295,6 @@ is_deeply $res, {
             date      => "2010-10-18T15:24:21Z",
             dist      => "semver",
             excerpt   => "README for the semver distribion. Installation instructions",
-            score     => "0.019",
             user      => "roger",
             user_name => "Roger Davidson",
             version   => "2.1.3",
@@ -332,6 +334,8 @@ is $res->{limit}, 50, 'Excessive limit should be ignored';
 for my $op (qw(: =)) {
     ok my $res = $search->search(query => 'dist:pair', in => 'dists'),
         qq{Search docs for "dist${op}pair"};
+    like delete $res->{hits}[0]{score}, qr/^\d+[.]\d+$/,
+        'The score should look like a score';
     is_deeply $res, {
         query  => "dist:pair",
         limit  => 50,
@@ -343,7 +347,6 @@ for my $op (qw(: =)) {
                 date      => "2010-10-18T15:24:21Z",
                 dist      => "pair",
                 excerpt   => "This is the pair README file. Here you will find all thingds related to pair, including installation information",
-                score     => "1.000",
                 user      => "theory",
                 user_name => "David E. Wheeler",
                 version   => "0.1.0",
@@ -355,6 +358,8 @@ for my $op (qw(: =)) {
 # Search for other stuff.
 ok $res = $search->search( query => 'nifty' ),
     'Seach the docs';
+like delete $res->{hits}[0]{score}, qr/^\d+[.]\d+$/,
+    'The score should look like a score';
 is_deeply $res, {
     query  => "nifty",
     limit  => 50,
@@ -367,7 +372,6 @@ is_deeply $res, {
             dist      => "pair",
             excerpt   => "The ordered pair data type is <strong>nifty</strong>, I tell ya!",
             docpath   => "doc/pair",
-            score     => "0.012",
             title     => "pair 0.1.0",
             user      => "theory",
             user_name => "David E. Wheeler",
@@ -378,6 +382,8 @@ is_deeply $res, {
 
 ok $res = $search->search( query => 'nifty', in => 'docs' ),
     'Seach the docs';
+like delete $res->{hits}[0]{score}, qr/^\d+[.]\d+$/,
+    'The score should look like a score';
 is_deeply $res, {
     query  => "nifty",
     limit  => 50,
@@ -390,7 +396,6 @@ is_deeply $res, {
             dist      => "pair",
             excerpt   => "The ordered pair data type is <strong>nifty</strong>, I tell ya!",
             docpath   => "doc/pair",
-            score     => "0.012",
             title     => "pair 0.1.0",
             user      => "theory",
             user_name => "David E. Wheeler",
@@ -401,6 +406,10 @@ is_deeply $res, {
 
 ok $res = $search->search( query => 'semantic', in => 'extensions' ),
     'Seach extensions';
+like delete $res->{hits}[0]{score}, qr/^\d+[.]\d+$/,
+    'First hit score should look like a score';
+like delete $res->{hits}[1]{score}, qr/^\d+[.]\d+$/,
+    'Second hit score should look like a score';
 is_deeply $res, {
     query  => "semantic",
     limit  => 50,
@@ -414,7 +423,6 @@ is_deeply $res, {
             docpath   => 'docs/semver',
             excerpt   => "A <strong>semantic</strong> version data type",
             extension => "semver",
-            score     => "0.101",
             user      => "roger",
             user_name => "Roger Davidson",
             version   => "1.3.4",
@@ -426,7 +434,6 @@ is_deeply $res, {
             docpath   => 'docs/perver',
             excerpt   => "A less than <strong>semantic</strong> version data type (scary)",
             extension => "perver",
-            score     => "0.072",
             user      => "roger",
             user_name => "Roger Davidson",
             version   => "1.3.4",
@@ -436,6 +443,8 @@ is_deeply $res, {
 
 
 ok $res = $search->search( query => 'Davidson', in => 'users' ), 'Seach users';
+like delete $res->{hits}[0]{score}, qr/^\d+[.]\d+$/,
+    'The score should look like a score';
 is_deeply $res, {
     query  => "Davidson",
     limit  => 50,
@@ -445,7 +454,6 @@ is_deeply $res, {
         {
             excerpt => "roger Roger is a <strong>Davidson</strong>. Har har.",
             name    => "Roger Davidson",
-            score   => "0.272",
             uri     => 'http://roger.example.com/',
             user    => "roger",
         },
