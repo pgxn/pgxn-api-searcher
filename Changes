@@ -1,6 +1,6 @@
 Revision history for Perl extension PGXN-API-Searcher.
 
-0.10.1
+0.10.1  2011-11-08T17:48:20Z
       - Fixed test to be neutral about scores, since Lucy is prone to changing
         how they're calculatd (as is the case on 0.2.2).
       - Worked around bug in Lucy 0.2.2's highlighting in the tests.
