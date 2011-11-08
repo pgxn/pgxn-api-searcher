@@ -275,32 +275,38 @@ like delete $res->{hits}[0]{score}, qr/^\d+[.]\d+$/,
     'First hit score should look like a score';
 like delete $res->{hits}[1]{score}, qr/^\d+[.]\d+$/,
     'Second hit score should look like a score';
-is_deeply $res, {
-    query  => "ordered pair",
-    limit  => 50,
-    offset => 0,
-    count  => 2,
-    hits   => [
-        {
-            abstract  => "A key/value pair data type",
-            date      => "2010-10-18T15:24:21Z",
-            dist      => "pair",
-            excerpt   => "This is the <strong>pair</strong> README file. Here you will find all thingds related to <strong>pair</strong>, including installation information",
-            user      => "theory",
-            user_name => "David E. Wheeler",
-            version   => "0.1.0",
-        },
-        {
-            abstract  => "A semantic version data type",
-            date      => "2010-10-18T15:24:21Z",
-            dist      => "semver",
-            excerpt   => "README for the semver distribion. Installation instructions",
-            user      => "roger",
-            user_name => "Roger Davidson",
-            version   => "2.1.3",
-        },
-    ],
-}, 'Should have results for simple search';
+
+TODO: {
+    # Hack to work around bug in Lucy 0.2.2.
+    local $TODO = 'Lucy 0.2.2 is broken' if Lucy->VERSION == 0.002002;
+
+    is_deeply $res, {
+        query  => "ordered pair",
+        limit  => 50,
+        offset => 0,
+        count  => 2,
+        hits   => [
+            {
+                abstract  => "A key/value pair data type",
+                date      => "2010-10-18T15:24:21Z",
+                dist      => "pair",
+                excerpt   => "This is the <strong>pair</strong> README file. Here you will find all thingds related to <strong>pair</strong>, including installation information",
+                user      => "theory",
+                user_name => "David E. Wheeler",
+                version   => "0.1.0",
+            },
+            {
+                abstract  => "A semantic version data type",
+                date      => "2010-10-18T15:24:21Z",
+                dist      => "semver",
+                excerpt   => "README for the semver distribion. Installation instructions",
+                user      => "roger",
+                user_name => "Roger Davidson",
+                version   => "2.1.3",
+            },
+        ],
+    }, 'Should have results for simple search';
+}
 
 # Test offset.
 ok $res = $search->search(

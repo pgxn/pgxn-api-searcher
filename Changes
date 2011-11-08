@@ -3,6 +3,7 @@ Revision history for Perl extension PGXN-API-Searcher.
 0.10.1
       - Fixed test to be neutral about scores, since Lucy is prone to changing
         how they're calculatd (as is the case on 0.2.2).
+      - Worked around bug in Lucy 0.2.2's highlighting in the tests.
 
 0.10.0  2011-08-26T17:11:54Z
       - Upgraded from KinoSearch to Lucy.
