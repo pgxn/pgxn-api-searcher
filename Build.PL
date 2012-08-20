@@ -26,8 +26,8 @@ Module::Build->new(
     meta_merge => {
         resources => {
             homepage   => 'http://search.cpan.org/dist/PGXN-API-Searcher/',
-            bugtracker => 'http://github.com/theory/pgxn-api-searcher/issues/',
-            repository => 'http://github.com/theory/pgxn-api-searcher/tree/',
+            bugtracker => 'http://github.com/pgxn/pgxn-api-searcher/issues/',
+            repository => 'http://github.com/pgxn/pgxn-api-searcher/tree/',
         }
     },
 )->create_build_script;
