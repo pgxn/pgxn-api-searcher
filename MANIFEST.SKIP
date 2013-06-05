@@ -28,7 +28,8 @@
 # Avoid build files.
 ^PGXN-API-Searcher
 
-# Avoid spelling test.
-pod-spelling.t$
+# Avoid Pos tests.
+t/pod.+
+
 ^MYMETA.yml$
 ^MYMETA\.json$
