@@ -1,6 +1,6 @@
 Revision history for Perl extension PGXN-API-Searcher.
 
-0.10.2
+0.10.2  2013-06-05T06:53:22Z
       - Updated GitHub URLs to point to `/pgxn/` rather than `/theory/`.
       - Removed the Pod tests from the distribution.
 
