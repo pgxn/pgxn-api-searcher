@@ -3,6 +3,7 @@ Revision history for Perl extension PGXN-API-Searcher.
 0.10.3
       - Converted the version from a v-string to a string to make
         ExtUtils::MakeMaker happy.
+      - No longer recommend the installation of Pod-testing modules.
 
 0.10.2  2013-06-05T06:53:22Z
       - Updated GitHub URLs to point to `/pgxn/` rather than `/theory/`.

@@ -18,10 +18,6 @@ Module::Build->new(
         'File::Spec' => 0,
         'Lucy'       => '0.2.1',
         'perl'       => 5.010,
-      },
-    recommends => {
-        'Test::Pod'           => '1.41',
-        'Test::Pod::Coverage' => '1.06',
     },
     meta_merge => {
         resources => {
