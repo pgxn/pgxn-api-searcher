@@ -23,7 +23,7 @@ Module::Build->new(
         resources => {
             homepage   => 'http://search.cpan.org/dist/PGXN-API-Searcher/',
             bugtracker => 'http://github.com/pgxn/pgxn-api-searcher/issues/',
-            repository => 'http://github.com/pgxn/pgxn-api-searcher/tree/',
+            repository => 'http://github.com/pgxn/pgxn-api-searcher/',
         }
     },
 )->create_build_script;
