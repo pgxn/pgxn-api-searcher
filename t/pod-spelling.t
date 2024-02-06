@@ -27,3 +27,4 @@ GitHub
 docpath
 htmldoc
 CPAN
+merchantability

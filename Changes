@@ -11,7 +11,7 @@ Revision history for Perl extension PGXN-API-Searcher.
 
 0.10.1  2011-11-08T17:48:20Z
       - Fixed test to be neutral about scores, since Lucy is prone to changing
-        how they're calculatd (as is the case on 0.2.2).
+        how they're calculated (as is the case on 0.2.2).
       - Worked around bug in Lucy 0.2.2's highlighting in the tests.
 
 0.10.0  2011-08-26T17:11:54Z
@@ -62,7 +62,7 @@ Revision history for Perl extension PGXN-API-Searcher.
 0.6.1   2011-03-28T03:07:13Z
       - The index to query is no longer specified as the first argument to
         `search()`, but via the new `index` parameter.
-      - The `index` paraemter defaults to "doc" if it's not specified.
+      - The `index` parameter defaults to "doc" if it's not specified.
       - Pass parameters to `search()` as a list rather than a hash reference.
       - Add `index` key to the returned hash.
 

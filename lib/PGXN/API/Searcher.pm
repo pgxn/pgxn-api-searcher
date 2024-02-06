@@ -113,8 +113,8 @@ PGXN::API::Searcher - PGXN API full text search interface
 
 =head1 Description
 
-L<PGXN|http://pgxn.org> is a L<CPAN|http://cpan.org>-inspired network for
-distributing extensions for the L<PostgreSQL RDBMS|http://www.postgresql.org>.
+L<PGXN|https://pgxn.org> is a L<CPAN|https://cpan.org>-inspired network for
+distributing extensions for the L<PostgreSQL RDBMS|https://www.postgresql.org>.
 All of the infrastructure tools, however, have been designed to be used to
 create networks for distributing any kind of release distributions and for
 providing a lightweight static file JSON REST API.
@@ -122,7 +122,7 @@ providing a lightweight static file JSON REST API.
 This module encapsulates the PGXN API search functionality. The indexes are
 created by L<PGXN::API::Indexer>; this module parses search queries, executes
 them against the appropriate index, and returns the results as a hash suitable
-for serializing to L<JSON|http://json.org/> in response to a request.
+for serializing to L<JSON|https://json.org/> in response to a request.
 
 To use this module, one must have a path to the API server document root
 created by PGXN::API. That is, with access to the same file system. It is
@@ -402,13 +402,12 @@ The tag name.
 
 =head1 Support
 
-This module is stored in an open L<GitHub
-repository|http://github.com/pgxn/pgxn-api-searcher/>. Feel free to fork and
-contribute!
+This module is stored in an open
+L<GitHub repository|https://github.com/pgxn/pgxn-api-searcher/>. Feel free to
+fork and contribute!
 
-Please file bug reports via L<GitHub
-Issues|http://github.com/pgxn/pgxn-api-searcher/issues/> or by sending mail to
-L<bug-PGXN-API-Searcher@rt.cpan.org|mailto:bug-PGXN-API-Searcher@rt.cpan.org>.
+Please file bug reports via
+L<GitHub Issues|https://github.com/pgxn/pgxn-api-searcher/issues/>.
 
 =head1 See Also
 
@@ -445,10 +444,10 @@ David E. Wheeler <david.wheeler@pgexperts.com>
 
 =head1 Copyright and License
 
-Copyright (c) 2011-2013 David E. Wheeler.
+Copyright (c) 2011-2014 David E. Wheeler.
 
 This module is free software; you can redistribute it and/or modify it under
-the L<PostgreSQL License|http://www.opensource.org/licenses/postgresql>.
+the L<PostgreSQL License|https://opensource.org/license/postgresql/>.
 
 Permission to use, copy, modify, and distribute this software and its
 documentation for any purpose, without fee, and without a written agreement is
