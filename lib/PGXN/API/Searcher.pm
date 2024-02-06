@@ -8,7 +8,7 @@ use Lucy::Search::IndexSearcher;
 use Lucy::Highlight::Highlighter;
 use Carp;
 
-our $VERSION = 'v0.10.3';
+our $VERSION = 'v0.11.0';
 
 sub new {
     my ($class, $path) = @_;
@@ -413,7 +413,7 @@ L<GitHub Issues|https://github.com/pgxn/pgxn-api-searcher/issues/>.
 
 =over
 
-=item L<PGXN::Manager>
+=item L<PGXN::Manager|https://github.com/pgxn/pgxn-manager>
 
 The heart of any PGXN network, PGXN::Manager manages distribution uploads and
 mirror maintenance. You'll want to look at it if you plan to build your own
@@ -440,7 +440,7 @@ PGXN::API::Searcher to manage C</search> HTTP requests.
 
 =head1 Author
 
-David E. Wheeler <david.wheeler@pgexperts.com>
+David E. Wheeler <david@justatheory.com>
 
 =head1 Copyright and License
 
