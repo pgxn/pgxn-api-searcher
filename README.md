@@ -1,5 +1,5 @@
-PGXN/API/Searcher v0.11.0
-=========================
+PGXN/API/Searcher
+=================
 
 This library's module, PGXN::API::Searcher, provides an interface to the
 PGXN::API search engine index. You *must* have direct access to the index,
