@@ -45,6 +45,7 @@ $class->new(
         'perl'       => '5.12.0',
     },
     meta_merge => {
+        'meta-spec' => { version => 2 },
         resources => {
             homepage   => 'https://metacpan.org/dist/PGXN-API-Searcher',
             bugtracker => 'https://github.com/pgxn/pgxn-api-searcher/issues/',

@@ -16,6 +16,6 @@ jobs:
         uses: shogo82148/actions-setup-perl@v1
         with: { perl-version: "${{ matrix.perl }}" }
       - name: Install Dependencies
-        run: cpanm -vn Module::Build && cpanm -vn --installdeps --with-recommends .
+        run: cpanm -vn Module::Build && cpanm -vn --installdeps --with-recommends --with-develop .
       - name: Run Tests
         run: perl Build.PL ./Build && ./Build test
